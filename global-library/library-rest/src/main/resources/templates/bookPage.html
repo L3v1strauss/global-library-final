@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book page</title>
+    <link href="styles/styles.css" rel="stylesheet"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
+</head>
+<body>
+<div class="media">
+    <img th:src="@{${book.getPicture()}}" class="mr-3" th:width="300px" th:height="300px">
+</div>
+<div style="width: 500px;">
+    <p class="breadcrumb" th:text="'Book id : ' + ${book.getId()}"></p>
+    <p class="breadcrumb" th:text="'Book isbn : ' + ${book.getIsbn()}"></p>
+    <p class="breadcrumb" th:text="'Book name : ' + ${book.getName()}"></p>
+    <p class="breadcrumb" th:text="'Book author : ' + ${book.getAuthor()}"></p>
+    <p class="breadcrumb" th:text="'Book description : ' + ${book.getDescription()}"></p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link href="/styles/styles.css" rel="stylesheet"/>
+    <link href="/styles/mainTemplate.css" rel="stylesheet"/>
+    <link href="/styles/sideMenu.css" rel="stylesheet"/>
+    <link href="/styles/table.css" rel="stylesheet"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
+<body th:class="html-body">
+<div id="page-container">
+    <div id="content-wrap">
+        <div th:insert="mainTemplate :: #header-selector"></div>
+        <div class="d-flex" id="side-wrapper">
+            <div id="left-side-menu">
+                <div class="bg-white" id="sidebar-wrapper">
+                    <div class="list-group">
+                        </br>
+                        <div th:class="font-weight-normal"><h6>Users</h6></div>
+                        <ul class="list-group list-group-flush">
+                            <a href="/admin/users" class="list-group-item list-group-item-action">All users</a>
+                        </ul>
+                        </br>
+                        <div th:class="font-weight-normal"><h6>Books</h6></div>
+                        <ul class="list-group list-group-flush">
+                            <a href="/admin/addbook" class="list-group-item list-group-item-action">Add book</a>
+                            <a href="/admin/books" class="list-group-item list-group-item-action">All books</a>
+                        </ul>
+                        </br>
+                        <div th:class="font-weight-normal"><h6>Requests</h6></div>
+                        <ul class="list-group list-group-flush">
+                            <a href="/users" class="list-group-item list-group-item-action">All requests</a>
+                        </ul>
+                        </br>
+                        <div th:class="font-weight-normal"><h6>Extraditions</h6></div>
+                        <ul class="list-group list-group-flush">
+                            <a href="/users" class="list-group-item list-group-item-action">All extraditions</a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <section th:class="font-weight-normal">
+                <!--for demo wrap-->
+                <h1 >Fixed Table header</h1>
+                <div class="tbl-header">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Company</th>
+                            <th>Price</th>
+                            <th>Change</th>
+                            <th>Change %</th>
+                            <th>Code</th>
+                            <th>Company</th>
+                            <th>Price</th>
+                            <th>Change</th>
+                            <th>Change %</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tbody>
+                        <tr>
+                            <td>AAC</td>
+                            <td>AUSTRALIAN COMPANY </td>
+                            <td>$1.38</td>
+                            <td>+2.01</td>
+                            <td>-0.36%</td>
+                            <td>AAC</td>
+                            <td>AUSTRALIAN COMPANY </td>
+                            <td>$1.38</td>
+                            <td>+2.01</td>
+                            <td>-0.36%</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        <div th:insert="mainTemplate :: #footer-selector"></div>
+    </div>
+</div>
+<script type="text/javascript" src="/js/table.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

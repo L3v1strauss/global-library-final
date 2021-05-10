@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>New person</title>
+    <link href="/styles/styles.css" rel="stylesheet"/>
+    <link href="/styles/select.css" rel="stylesheet"/>
+    <link href="/styles/mainTemplate.css" rel="stylesheet"/>
+    <link href="/styles/input.css" rel="stylesheet"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+<body>
+<div id="page-container">
+    <div id="content-wrap">
+        <div th:insert="mainTemplate :: #header-selector"></div>
+        <form id="Create" class="form-input" th:method="POST" th:action="@{/new}" th:object="${user}">
+            <fieldset>
+              <p><a class="text-muted"  href="/new/privilege" th:text="'Are you student or teacher? Create privilege account'"></a></p>
+                <h5 class="font-weight-normal">Please fill out the form</h5>
+                        <select id="earringstd" th:field="*{roleName}" th:name="roleName">
+                            <option th:value="'ROLE_USER'" type="hidden">
+                                <div th:text="USER"></div>
+                            </option>
+                        </select>
+                <div class="group">
+                    <div style="color:red" th:text="${emailError}"></div>
+                    <input type="text" th:field="*{email}" id="email" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="label">Enter email*</label>
+                </div>
+                <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                <div style="color:red" th:text="${passwordError}"></div>
+                <div class="group">
+                    <input type="password" th:field="*{password}" id="password" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="label">Enter password*</label>
+                </div>
+                <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                <div class="group">
+                    <input type="password" th:field="*{passwordConfirm}" id="passwordConfirm" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="label">Confirm password*</label>
+                </div>
+                <h5 class="font-weight-normal">Please enter additional information</h5>
+                <div class="group">
+                    <input type="text" th:field="*{firstName}" id="firstName" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="label">First name*</label>
+                </div>
+                <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                <div class="group">
+                    <input type="text" th:field="*{lastName}" id="lastName" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="label">Last name*</label>
+                </div>
+                <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                <div class="group">
+                    <input type="text" th:field="*{userDetailDto.passportNumber}" id="passportNumber" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="label">Passport number*</label>
+                </div>
+                <div style="color:red" th:if="${#fields.hasErrors('userDetailDto.passportNumber')}" th:errors="*{userDetailDto.passportNumber}"></div>
+                <div class="btn-box">
+                    <button class="btn btn-submit" type="submit">Create</button>
+                </div>
+            </fieldset>
+        </form>
+        <div th:insert="mainTemplate :: #footer-selector"></div>
+    </div>
+</div>
+<script>
+    document.getElementById("earringstd").style.display = "none";
+</script>
+<script type="text/javascript" src="/js/select.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

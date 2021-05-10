@@ -1,0 +1,50 @@
+
+table{
+    width:100%;
+    table-layout: fixed;
+}
+.tbl-header{
+    background-color: #edf5e1;
+}
+.tbl-content{
+    height:500px;
+    overflow-x:auto;
+    margin-top: 0px;
+    border-top: 1px solid #8b8b8b;
+}
+th{
+    padding: 10px 10px 10px 10px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: #000000;
+    text-transform: uppercase;
+}
+td{
+    padding: 10px;
+    text-align: left;
+    vertical-align:middle;
+    font-weight: 300;
+    font-size: 13px;
+    color: #808080;
+    border-bottom: solid 1px #8b8b8b;
+}
+
+
+/* demo styles */
+
+section{
+    margin: 50px 100px;
+}
+
+/* for custom scrollbar for webkit browser*/
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}

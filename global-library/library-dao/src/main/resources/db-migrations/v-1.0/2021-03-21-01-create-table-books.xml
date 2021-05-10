@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet context="legacy" author="author" id="1-create-users">
+        <sqlFile dbms="mysql" path="sql/v-1.0/2021-03-21-01-create-table-books.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+</databaseChangeLog>

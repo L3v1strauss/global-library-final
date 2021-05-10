@@ -1,0 +1,55 @@
+.select-box {
+    cursor: pointer;
+    position : relative;
+    max-width:  20em;
+    /*margin: 5em auto;*/
+    width: 100%;
+
+}
+
+.select,
+.label {
+    color: #808080;
+    display: block;
+}
+
+.select {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    padding: 5px 0;
+    height: 40px;
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    background: none transparent;
+    border: 0 none;
+    background: #edf5e1;
+}
+
+.label {
+    position: relative;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #edf5e1;
+}
+.open .label::after {
+    content: "▲";
+}
+.label::after {
+    background-color: #edf5e1;
+    content: "▼";
+    font-size: 12px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 5px 15px;
+    /*border-left: 5px solid #fff;*/
+}
+
+select:focus > option:checked {
+    background: #edf5e1 !important;
+}
+
+.option:hover {
+    box-shadow: 0 0 10px 100px #edf5e9 inset;
+}

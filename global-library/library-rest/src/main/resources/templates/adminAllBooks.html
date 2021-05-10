@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link href="/styles/styles.css" rel="stylesheet"/>
+    <link href="/styles/mainTemplate.css" rel="stylesheet"/>
+    <link href="/styles/sideMenu.css" rel="stylesheet"/>
+    <link href="/styles/table.css" rel="stylesheet"/>
+    <link href="/styles/select.css" rel="stylesheet"/>
+    <link href="/styles/secondSelect.css" rel="stylesheet"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
+    <script src="https://use.fontawesome.com/1deb41b553.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<body th:class="html-body">
+<div id="page-container">
+    <div id="content-wrap">
+        <div th:insert="mainTemplate :: #header-selector"></div>
+        <div class="d-flex" id="side-wrapper">
+            <div th:insert="adminMainPage :: #left-side-menu"></div>
+            <section th:class="font-weight-normal">
+                <div class="input-group">
+                    <form th:method="GET" th:action="@{/admin/books/search(request = ${request})}">
+                    <input type="text" class="form-control shadow-success" th:value="${request}" id="request" name="request">
+                    <span class="input-group-btn">
+                <button id="collor-button" class="btn btn-light collor-button" type="submit"><i class="fa fa-search"></i></button>
+              </span>
+                    </form>
+                </div>
+                <h2>Books</h2>
+                <div class="tbl-header">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                        <tr>
+                            <th>isbn</th>
+                            <th>Name</th>
+                            <th>Authors</th>
+                            <th>Genre</th>
+                            <th>Date of creation</th>
+                            <th>Full info</th>
+                            <th>Deleting</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tbl-content font-weight-normal">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tbody>
+                        <th:block th:each="book : *{books}">
+                            <tr>
+                                <td th:text="${book.isbn}">
+                                <td th:text="${book.name}"></td>
+                                <td>
+                                    <p th:each="author : ${book.authors}">
+                                        <span th:text="${author.name}">Name</span>
+                                    </p>
+                                </td>
+                                <td th:text="${book.genre.name}">
+                                <td th:text="${book.parseDateOfCreation()}"></td>
+                                <td>
+                                    <a href="#"><img th:class="btn-link" th:src="@{'/images/info.png'}"  data-toggle="modal"
+                                                     th:attr="data-target='#fullInfo' + ${book.getId()}"></a>
+                                    <div class="modal fade" th:id="'fullInfo' + ${book.getId()}" tabindex="-1"
+                                         role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5>Full book information</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body" style="font-size: 15px;">
+                                                    <div class="card mb-3" style="max-width: 900px;">
+                                                        <div class="row no-gutters">
+                                                            <div class="col-md-4 align-items-center" >
+                                                                <div class="img-center">
+                                                                    <img th:src="@{${book.getPicture()}}"
+                                                                         alt="Admin" class="rounded"
+                                                                         width="150">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <div class="card-body">
+                                                                    <!--  <h5 class="card-title">Card title</h5>-->
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <h6 class="mb-0">isbn</h6>
+                                                                        </div>
+                                                                        <div class="col-sm-9 text-secondary" th:text="${book.isbn}"></div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <h6 class="mb-0">Name</h6>
+                                                                        </div>
+                                                                        <div class="col-sm-9 text-secondary" th:text="${book.name}"></div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <h6 class="mb-0">Authors</h6>
+                                                                        </div>
+                                                                        <div class="col-sm-9 text-secondary">
+                                                                            <p th:each="author : ${book.authors}">
+                                                                                <span th:text="${author.name}">Name</span>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                            <div class="col-sm-3">
+                                                                                <h6 class="mb-0">Genre</h6>
+                                                                            </div>
+                                                                            <div class="col-sm-9 text-secondary" th:text="${book.genre.name}">
+                                                                            </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <h6 class="mb-0">Publisher</h6>
+                                                                        </div>
+                                                                        <div class="col-sm-9 text-secondary" th:text="${book.publisher.name}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <h6 class="mb-0">Year of publication</h6>
+                                                                        </div>
+                                                                        <div class="col-sm-9 text-secondary" th:text="${book.yearOfPublishing.getYear()}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <h6 class="mb-0">Description</h6>
+                                                                        </div>
+                                                                        <div class="col-sm-9 text-secondary" th:text="${book.description}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-dark" data-toggle="modal"
+                                            th:attr="data-target='#deleteModal' + ${book.id}">
+                                        Delete
+                                    </button>
+                                    <div class="modal fade" th:id="'deleteModal' + ${book.id}" tabindex="-1"
+                                         role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body font-weight-normal" style="font-size: 18px;">
+                                                    Do you realy want delete this user?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div>
+                                                        <form th:method="DELETE"
+                                                              th:action="@{/admin/books/{id}(id=${book.getId()})}"
+                                                              th:object="${book}">
+                                                            <input type="submit" value="Delete" class="btn btn-dark"/>
+                                                            <button type="button" class="btn btn-outline-dark"
+                                                                    data-dismiss="modal">Close
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        <div th:insert="mainTemplate :: #footer-selector"></div>
+    </div>
+</div>
+<script type="text/javascript" src="/js/table.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

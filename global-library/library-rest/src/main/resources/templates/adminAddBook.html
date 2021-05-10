@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link href="/styles/styles.css" rel="stylesheet"/>
+    <link href="/styles/select.css" rel="stylesheet"/>
+    <link href="/styles/mainTemplate.css" rel="stylesheet"/>
+    <link href="/styles/sideMenu.css" rel="stylesheet"/>
+    <link href="/styles/userChangePassword.css" rel="stylesheet"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+<body>
+<div id="page-container">
+    <div id="content-wrap">
+        <div th:insert="mainTemplate :: #header-selector"></div>
+        <div class="d-flex" id="side-wrapper">
+            <div th:insert="adminMainPage :: #left-side-menu"></div>
+            <form class="form-input" th:method="POST"
+                  th:action="@{/admin/addbook}"
+                  th:object="${book}">
+                <fieldset>
+                    </br>
+                    <div style="color:red" th:if="${#fields.hasErrors('genreName')}" th:errors="*{genreName}"></div>
+                    <div class="font-weight-normal">
+                        <div class="custom-slct" style="width:200px;">
+                            <select  th:field="*{genreName}" id="">
+                                <option th:value="null">
+                                    <div th:text="Choose...genre"></div>
+                                </option>
+                                <option th:value="'FICTION'" th:text="Fiction"></option>
+                                <option th:value="'SCIENCE'" th:text="Science"></option>
+                                <option th:value="'MATH'" th:text="Math"></option>
+                                <option th:value="'ECONOMY'" th:text="Economy"></option>
+                                <option th:value="'COMPUTER_SCIENCE'">Computer science</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <input type="text" th:field="*{isbn}" id="isbn" required="true"
+                               autofocus="true"/>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label class="label">Enter isbn</label>
+                    </div>
+                    <div style="color:red" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
+                    <div class="btn-box">
+                        <button class="btn btn-submit" type="submit">ADD</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div th:insert="mainTemplate :: #footer-selector"></div>
+    </div>
+</div>
+<script type="text/javascript" src="/js/select.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

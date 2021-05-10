@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link href="styles/styles.css" rel="stylesheet"/>
+    <link href="styles/mainTemplate.css" rel="stylesheet"/>
+    <link href="styles/inputLogin.css" rel="stylesheet"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
+</head>
+<body>
+<div id="page-container">
+    <div id="content-wrap">
+        <div th:insert="mainTemplate :: #header-selector"></div>
+        <form class="form-input" th:action="@{/login}" method="post">
+            <fieldset>
+                <div th:if="${param.error}">
+                    <div class="alert alert-danger">
+                        Invalid email and password.
+                    </div>
+                </div>
+                <div th:if="${param.logout}">
+                    <div class="alert alert-info">
+                        You have been logged out.
+                    </div>
+                </div>
+                <div class="text-muted text-center" style="font-size: 25px">Please sign in</div>
+                <div th:class="group">
+                    <input type="text" id="email" name="email" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label>Email</label>
+                </div>
+                <div th:class="group">
+                    <input type="password" id="password" name="password" required="true" autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label>Password</label>
+                </div>
+                <p><a class="text-muted" style="text-align: right;" href="/login/forgotpassword"
+                      th:text="'Forgot password?'"></a></p>
+                <div class="btn-box">
+                    <button class="btn btn-submit" type="submit">Log in</button>
+                </div>
+            </fieldset>
+        </form>
+        <div th:insert="mainTemplate :: #footer-selector"></div>
+    </div>
+</div>
+</body>
+</html>
