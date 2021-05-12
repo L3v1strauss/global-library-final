@@ -21,7 +21,6 @@ public class UserController {
 
     private final IUserService userService;
 
-    @Autowired
     public UserController(IUserService userService) {
         this.userService = userService;
     }
@@ -95,7 +94,7 @@ public class UserController {
             return "userMyAccount";
         }
         this.userService.updateUser(principal, user, file);
-        return "userMyAccount";
+        return "redirect:/user/myaccount";
 
 
     }

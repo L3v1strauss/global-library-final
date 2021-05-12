@@ -22,15 +22,11 @@ import java.util.Map;
 
 @Service
 @Slf4j
-@PropertySource(value = {"classpath:application.properties"})
 public class EmailSendler implements IEmailSendler {
 
     private static final String EMAIL_ADDRESS = "L3v1strauss@gmail.com";
 
     private final JavaMailSender emailSender;
-
-    @Value("${spring.mail.logo.path}")
-    private Resource resourceFile;
 
     @Autowired
     public EmailSendler(JavaMailSender emailSender) {

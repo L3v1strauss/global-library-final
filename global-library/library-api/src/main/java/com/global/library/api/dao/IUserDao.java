@@ -13,4 +13,6 @@ public interface IUserDao extends IAGenericDao<User> {
     List<User> findUsersBySearchRequest(String request);
 
     boolean isUserExist(String email);
+
+
 }

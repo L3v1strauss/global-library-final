@@ -13,23 +13,19 @@
 <div id="page-container">
     <div id="content-wrap">
         <div th:insert="mainTemplate :: #header-selector"></div>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
         <div class="body">
             <div class="container">
                 <div class="row">
-                    <!-- BEGIN SEARCH RESULT -->
                     <div class="col-md-12">
                         <div class="grid search">
                             <div class="grid-body">
                                 <div class="row">
-                                    <!-- BEGIN FILTERS -->
                                     <div class="col-md-3">
                                         <h5 class="grid-title"><i class="fa fa-filter"></i> Filters</h5>
                                         <hr>
-
-                                        <!-- BEGIN FILTER BY CATEGORY -->
                                         <form id="form-filter" th:method="GET" th:action="@{/books/filter/genre}"
                                               th:object="${genres}">
+                                            <h5>By genre:</h5>
                                             <div class="checkbox">
                                                 <label><input th:field="*{fiction}" th:value="'FICTION'" type="checkbox"
                                                               class="icheck"> Fiction</label>
@@ -51,47 +47,8 @@
                                                               th:value="'COMPUTER_SCIENCE'" type="checkbox"
                                                               class="icheck"> Computer science</label>
                                             </div>
-                                            <h5>By genre:</h5>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{fiction}"
-                                                           th:value="'FICTION'" th:id="fiction" th:name="fiction">
-                                                    <span>Fiction</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{science}"
-                                                           th:value="'SCIENCE'" th:id="science" th:name="science">
-                                                    <span>Science</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{math}" th:value="'MATH'"
-                                                           th:id="math" th:name="math">
-                                                    <span>Math</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{economy}"
-                                                           th:value="'ECONOMY'" th:id="economy" th:name="economy">
-                                                    <span>Economy</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{computerScience}"
-                                                           th:value="'COMPUTER_SCIENCE'" th:id="computerScience"
-                                                           th:name="computerScience">
-                                                    <span>Computer science</span>
-                                                </label>
-                                            </div>
-                                            <!-- END FILTER BY CATEGORY -->
                                         </form>
                                         <div class="padding"></div>
-                                        <!-- BEGIN FILTER BY DATE -->
                                         <h5>By rating:</h5>
                                         From
                                         <div class="input-group date form_date" data-date="2014-06-14T05:25:07Z"
@@ -108,29 +65,24 @@
                                             <span class="input-group-addon bg-blue"><i class="fa fa-th"></i></span>
                                         </div>
                                         <input type="hidden" id="dtp_input2" value="">
-                                        <!-- END FILTER BY DATE -->
 
                                         <div class="padding"></div>
                                     </div>
-                                    <!-- END FILTERS -->
-                                    <!-- BEGIN RESULT -->
                                     <div class="col-md-9">
                                         <h5><i class="fa fa-file-o"></i> Books</h5>
                                         <hr>
-                                        <!-- BEGIN SEARCH INPUT -->
                                         <form th:method="GET" th:action="@{/books/search(request = ${request})}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control shadow-success"
                                                        th:value="${request}" id="request" name="request">
                                                 <span class="input-group-btn">
-                                            <button class="btn btn-light collor-button" type="submit"><i
+                                            <button id="collor-button" class="btn btn-light collor-button"
+                                                    type="submit"><i
                                                     class="fa fa-search"></i></button></span>
                                             </div>
                                         </form>
-                                        <!-- END SEARCH INPUT -->
                                         <div class="padding"></div>
                                         <div class="row">
-                                            <!-- BEGIN ORDER RESULT -->
                                             <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <select class="form-control shadow-success"
@@ -141,7 +93,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <!-- END ORDER RESULT -->
                                             <div class="col-md-6 text-right">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-default active"><i
@@ -152,8 +103,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- BEGIN TABLE RESULT -->
                                         <th:block th:each="book : ${books}">
                                             <div class="table-responsive">
 
@@ -183,15 +132,12 @@
                                                 </table>
                                             </div>
                                         </th:block>
-                                        <!-- END TABLE RESULT -->
+                                    </div>
+                                </div>
+                            </div>
 
-                                        <!-- BEGIN PAGINATION -->
-                                        <div th:if="${bookPage.totalPages > 0}" class="pagination"
-                                             th:each="pageNumber : ${pageNumbers}">
-                                            <a th:href="@{/listBooks(size=${bookPage.size}, page=${pageNumber})}"
-                                               th:text="${pageNumber}" th:class="${pageNumber==bookPage.number + 1} ? active"></a>
-                                        </div>
-                    <!-- END SEARCH RESULT -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -203,17 +149,6 @@
         $("#form-filter").on("change", "input:checkbox", function () {
             $("#form-filter").submit();
         });
-    });
-</script>
-<script>
-    $(function () {
-        var test = localStorage.input === 'true' ? true : false;
-        $('input').prop('checked', test || false);
-    });
-
-    $('input').on('change', function () {
-        localStorage.input = $(this).is(':checked');
-        console.log($(this).is(':checked'));
     });
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

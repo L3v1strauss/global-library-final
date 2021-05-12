@@ -64,10 +64,10 @@ public class User extends AEntity<Long> {
             fetch = FetchType.LAZY)
     private List<Extradition> extraditions;
 
-    @OneToMany(cascade = CascadeType.ALL,
+    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, orphanRemoval = true,
             mappedBy = "user",
             fetch = FetchType.LAZY)
-    private List<Request> ratings;
+    private List<Rating> ratings;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id", referencedColumnName = "id")

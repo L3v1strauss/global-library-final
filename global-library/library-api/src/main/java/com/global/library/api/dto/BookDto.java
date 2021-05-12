@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.ISBN;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -18,6 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@Slf4j
 public class BookDto {
 
     private long id;
@@ -30,8 +33,11 @@ public class BookDto {
     private LocalDateTime dateOfCreation;
     private LocalDate yearOfPublishing;
     private Set<AuthorDto> authors;
+    private List<RatingDto> ratings;
     private GenreDto genre;
     private PublisherDto publisher;
+    private int quantity;
+    private double averageRating;
 
     @NotEmpty
     private String genreName;
@@ -40,5 +46,4 @@ public class BookDto {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return this.dateOfCreation.format(formatter).toString().replace("T", " ");
     }
-
 }

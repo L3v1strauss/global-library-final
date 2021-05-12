@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -38,6 +39,9 @@ public class Book extends AEntity<Long> {
     @Column(name = "publishing_year")
     private LocalDate yearOfPublishing;
 
+    @Column(name = "quantity")
+    private int quantity;
+
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
@@ -53,6 +57,11 @@ public class Book extends AEntity<Long> {
             fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, orphanRemoval = true,
+            mappedBy = "book",
+            fetch = FetchType.LAZY)
+    private List<Rating> ratings;
 
     @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
     private Request request;

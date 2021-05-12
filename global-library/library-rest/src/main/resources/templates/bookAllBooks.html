@@ -14,23 +14,19 @@
 <div id="page-container">
     <div id="content-wrap">
         <div th:insert="mainTemplate :: #header-selector"></div>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
         <div class="body">
             <div class="container">
                 <div class="row">
-                    <!-- BEGIN SEARCH RESULT -->
                     <div class="col-md-12">
                         <div class="grid search">
                             <div class="grid-body">
                                 <div class="row">
-                                    <!-- BEGIN FILTERS -->
                                     <div class="col-md-3">
                                         <h5 class="grid-title"><i class="fa fa-filter"></i> Filters</h5>
                                         <hr>
-
-                                        <!-- BEGIN FILTER BY CATEGORY -->
                                         <form id="form-filter" th:method="GET" th:action="@{/books/filter/genre}"
                                               th:object="${genres}">
+                                            <h5>By genre:</h5>
                                             <div class="checkbox">
                                                 <label><input th:field="*{fiction}" th:value="'FICTION'" type="checkbox"
                                                               class="icheck"> Fiction</label>
@@ -52,48 +48,45 @@
                                                               th:value="'COMPUTER_SCIENCE'" type="checkbox"
                                                               class="icheck"> Computer science</label>
                                             </div>
-                                            <h5>By genre:</h5>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{fiction}"
-                                                           th:value="'FICTION'" th:id="fiction" th:name="fiction">
-                                                    <span>Fiction</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{science}"
-                                                           th:value="'SCIENCE'" th:id="science" th:name="science">
-                                                    <span>Science</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{math}" th:value="'MATH'"
-                                                           th:id="math" th:name="math">
-                                                    <span>Math</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{economy}"
-                                                           th:value="'ECONOMY'" th:id="economy" th:name="economy">
-                                                    <span>Economy</span>
-                                                </label>
-                                            </div>
-                                            <div class="checkbox">
-                                                <label class="custom-checkbox">
-                                                    <input type="checkbox" th:valuetype="*{computerScience}"
-                                                           th:value="'COMPUTER_SCIENCE'" th:id="computerScience"
-                                                           th:name="computerScience">
-                                                    <span>Computer science</span>
-                                                </label>
-                                            </div>
-                                            <!-- END FILTER BY CATEGORY -->
+
+<!--                                            <div class="checkbox">-->
+<!--                                                <label class="custom-checkbox">-->
+<!--                                                    <input type="checkbox" th:valuetype="*{fiction}"-->
+<!--                                                           th:value="'FICTION'" th:id="fiction" th:name="fiction">-->
+<!--                                                    <span>Fiction</span>-->
+<!--                                                </label>-->
+<!--                                            </div>-->
+<!--                                            <div class="checkbox">-->
+<!--                                                <label class="custom-checkbox">-->
+<!--                                                    <input type="checkbox" th:valuetype="*{science}"-->
+<!--                                                           th:value="'SCIENCE'" th:id="science" th:name="science">-->
+<!--                                                    <span>Science</span>-->
+<!--                                                </label>-->
+<!--                                            </div>-->
+<!--                                            <div class="checkbox">-->
+<!--                                                <label class="custom-checkbox">-->
+<!--                                                    <input type="checkbox" th:valuetype="*{math}" th:value="'MATH'"-->
+<!--                                                           th:id="math" th:name="math">-->
+<!--                                                    <span>Math</span>-->
+<!--                                                </label>-->
+<!--                                            </div>-->
+<!--                                            <div class="checkbox">-->
+<!--                                                <label class="custom-checkbox">-->
+<!--                                                    <input type="checkbox" th:valuetype="*{economy}"-->
+<!--                                                           th:value="'ECONOMY'" th:id="economy" th:name="economy">-->
+<!--                                                    <span>Economy</span>-->
+<!--                                                </label>-->
+<!--                                            </div>-->
+<!--                                            <div class="checkbox">-->
+<!--                                                <label class="custom-checkbox">-->
+<!--                                                    <input type="checkbox" th:valuetype="*{computerScience}"-->
+<!--                                                           th:value="'COMPUTER_SCIENCE'" th:id="computerScience"-->
+<!--                                                           th:name="computerScience">-->
+<!--                                                    <span>Computer science</span>-->
+<!--                                                </label>-->
+<!--                                            </div>-->
                                         </form>
                                         <div class="padding"></div>
-
-                                        <!-- BEGIN FILTER BY DATE -->
                                         <h5>By rating:</h5>
                                         From
                                         <div class="input-group date form_date" data-date="2014-06-14T05:25:07Z"
@@ -110,29 +103,22 @@
                                             <span class="input-group-addon bg-blue"><i class="fa fa-th"></i></span>
                                         </div>
                                         <input type="hidden" id="dtp_input2" value="">
-                                        <!-- END FILTER BY DATE -->
-
                                         <div class="padding"></div>
                                     </div>
-                                    <!-- END FILTERS -->
-                                    <!-- BEGIN RESULT -->
                                     <div class="col-md-9">
                                         <h5><i class="fa fa-file-o"></i> Books</h5>
                                         <hr>
-                                        <!-- BEGIN SEARCH INPUT -->
-                                        <form th:method="GET" th:action="@{/books(request = ${request})}">
+                                        <form th:method="GET" th:action="@{/books/search(request = ${request})}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control shadow-success"
                                                        th:value="${request}" id="request" name="request">
                                                 <span class="input-group-btn">
-                                            <button class="btn btn-light collor-button" type="submit"><i
+                                            <button id="collor-button" class="btn btn-light shadow-success" type="submit"><i
                                                     class="fa fa-search"></i></button></span>
                                             </div>
                                         </form>
-                                        <!-- END SEARCH INPUT -->
                                         <div class="padding"></div>
                                         <div class="row">
-                                            <!-- BEGIN ORDER RESULT -->
                                             <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <select class="form-control shadow-success"
@@ -143,7 +129,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <!-- END ORDER RESULT -->
                                             <div class="col-md-6 text-right">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-default active"><i
@@ -154,18 +139,16 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- BEGIN TABLE RESULT -->
                                         <th:block th:each="book : ${books}">
                                             <div class="table-responsive">
 
                                                 <table class="table table-hover">
                                                     <tbody>
-                                                    <tr>
-                                                        <td class="number text-center">1</td>
+                                                    <tr th:onclick="'window.location.href = \'' + @{/books/book(isbn=${book.isbn})} + '\''">
+                                                        <td class="number text-center"></td>
                                                         <td class="image"><img th:src="@{${book.getPicture()}}">
                                                         </td>
-                                                        <td class="product">
+                                                        <td class="product" width="500">
                                                             <strong th:text="${#strings.abbreviate(book.name,100)}"></strong>
                                                             <br>
                                                             <i th:each="author : ${book.authors}" th:text="${author.name == book.getAuthors()[0].name}
@@ -175,37 +158,83 @@
                                                             <p th:text="${#strings.abbreviate(book.description,200)}">
                                                             </p>
                                                         </td>
-                                                        <td class="rate text-right"><p><i class="fa fa-star"></i><i
-                                                                class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                                class="fa fa-star"></i><i
-                                                                class="fa fa-star-half-o"></i></p></td>
-                                                        <td class="price text-right">rating</td>
+                                                        <td class="rate text-right">
+                                                            <div th:if="${book.averageRating > 0 && book.averageRating <= 1}" class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 1 && book.averageRating <= 1.5}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
+                                                                    class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 1.5 && book.averageRating <= 2}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 2 && book.averageRating <= 2.5}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-half-o gold"></i><i class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 2.5 && book.averageRating <= 3}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 3 && book.averageRating <= 3.5}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
+                                                                    class="fa fa-star-o"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 3.5 && book.averageRating <= 4}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-o"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 4 && book.averageRating <= 4.5}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-half-o gold"></i>
+                                                            </div>
+                                                            <div th:if="${book.averageRating > 4.5 && book.averageRating <= 5}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i>
+                                                            </div>
+                                                        </td>
+                                                        <td class="price text-right" th:text="${book.averageRating}"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </th:block>
-                                        <!-- END TABLE RESULT -->
-                                        <!-- BEGIN PAGINATION -->
                                         <nav aria-label="Page navigation example" class="pagination-position">
                                             <ul class="pagination">
                                                 <li class="page-item" th:if="${bookPage.totalPages > 0}"
                                                     th:each="pageNumber : ${pageNumbers}">
-                                                        <a class="page-link"
-                                                           th:href="@{/books(size=${bookPage.size}, page=${pageNumber})}"
-                                                           th:text="${pageNumber}">
-                                                        </a>
+                                                    <a class="page-link"
+                                                       th:href="@{/books(size=${bookPage.size}, page=${pageNumber})}"
+                                                       th:text="${pageNumber}">
+                                                    </a>
                                                 </li>
                                             </ul>
                                         </nav>
-                                        <!-- END PAGINATION -->
                                     </div>
-                                    <!-- END RESULT -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- END SEARCH RESULT -->
                 </div>
             </div>
         </div>

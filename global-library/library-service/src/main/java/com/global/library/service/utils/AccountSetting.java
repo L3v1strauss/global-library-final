@@ -11,13 +11,8 @@ import lombok.experimental.UtilityClass;
 public class AccountSetting {
 
     public void roleAddOrChange(User user, String roleName) {
-        if (roleName == RoleName.ROLE_USER.name()) {
-            user.getRoles().add(Role.builder()
-                    .id(RoleName.ROLE_USER.getId())
-                    .name(RoleName.ROLE_USER.name()).build());
-        }
         for (RoleName value : RoleName.values()) {
-            if (value.toString().equals(roleName)) {
+            if (value.name().equals(roleName)) {
                 if (!user.getRoles().isEmpty()) {
                     user.getRoles().clear();
                 }
@@ -30,7 +25,7 @@ public class AccountSetting {
     }
 
     public void startStatusChange(User user, String roleName) {
-        if (roleName == RoleName.ROLE_USER.name()) {
+        if (roleName.equals(RoleName.ROLE_USER.name())) {
             user.setStatus(UserStatus.Enabled.getId());
         } else {
             user.setStatus(UserStatus.Disabled.getId());

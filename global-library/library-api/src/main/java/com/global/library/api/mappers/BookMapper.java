@@ -20,9 +20,11 @@ public class BookMapper {
                 .description(source.getDescription())
                 .dateOfCreation(source.getDateOfCreation())
                 .yearOfPublishing(source.getYearOfPublishing())
+                .quantity(source.getQuantity())
                 .genre(GenreMapper.mapGenre(source.getGenre()))
                 .publisher(PublisherMapper.mapPublisher(source.getPublisher()))
                 .authors(AuthorMapper.mapAllAuthors(source.getAuthors()))
+                .ratings(RatingMapper.mapAllRatings(source.getRatings()))
                 .build();
 
     }
@@ -38,7 +40,9 @@ public class BookMapper {
                 .yearOfPublishing(source.getYearOfPublishing())
                 .genre(GenreMapper.mapGenreDto(source.getGenre()))
                 .publisher(PublisherMapper.mapPublisherDto(source.getPublisher()))
+                .quantity(source.getQuantity())
                 .authors(AuthorMapper.mapAllAuthorsDto(source.getAuthors()))
+                .ratings(RatingMapper.mapAllRatingsDto(source.getRatings()))
                 .build();
 
     }

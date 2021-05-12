@@ -1,21 +1,269 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="">
 <head>
-    <title>Book page</title>
-    <link href="styles/styles.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link href="/styles/styles.css" rel="stylesheet"/>
+    <link href="/styles/bookPage.css" rel="stylesheet"/>
+    <link href="/styles/mainTemplate.css" rel="stylesheet"/>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
-</head>
-<body>
-<div class="media">
-    <img th:src="@{${book.getPicture()}}" class="mr-3" th:width="300px" th:height="300px">
+    <script src="https://use.fontawesome.com/1deb41b553.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<body th:class="html-body">
+<div id="page-container">
+    <div id="content-wrap">
+        <div th:insert="mainTemplate :: #header-selector"></div>
+        <div class="body">
+            <div class="container">
+                <div class="card">
+                    <div class="row">
+                        <aside class="col-sm-5 border-right">
+                            <article class="gallery-wrap">
+                                <div class="img-big-wrap">
+                                    <div class="image-position"><a href="#"><img th:src="@{${book.getPicture()}}"></a>
+                                    </div>
+                                </div>
+                            </article>
+                        </aside>
+                        <aside class="col-sm-7">
+                            <article class="card-body p-5">
+                                <h4 class="title mb-3" th:text="${book.name}"></h4>
+                                <span th:each="author : ${book.authors}" th:text="${author.name == book.getAuthors()[0].name}
+                                                            ? *{author.name} : ' & ' + *{author.name}"></span>
+                                <p class="price-detail-wrap">
+                                <div th:if="${averageRating > 0 && averageRating < 1}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${averageRating > 1 && averageRating <= 1.5}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
+                                        class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${averageRating > 1.5 && averageRating <= 2}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${averageRating > 2 && averageRating <= 2.5}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-half-o gold"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${averageRating > 2.5 && averageRating <= 3}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${averageRating > 3 && averageRating <= 3.5}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${averageRating > 3.5 && averageRating <= 4}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${averageRating > 4 && averageRating <= 4.5}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-half-o gold"></i>
+                                </div>
+                                <div th:if="${averageRating > 4.5 && averageRating <= 5}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i>
+                                </div>
+                                <span class="price h3 text-warning">
+		                       <span class="num" th:text="${averageRating}"></span>
+	                                   </span>
+                                </p>
+                                <dl class="param param-feature">
+                                    <dt>ISBN</dt>
+                                    <dd th:text="${book.isbn}"></dd>
+                                </dl>
+                                <dl class="param param-feature">
+                                    <dt>Genre</dt>
+                                    <dd th:text="${book.genre.name}"></dd>
+                                </dl>
+                                <dl class="param param-feature">
+                                    <dt>Publisher</dt>
+                                    <dd th:text="${book.publisher.name}"></dd>
+                                </dl>
+                                <dl class="param param-feature">
+                                    <dt>Year of publishing</dt>
+                                    <dd th:text="${book.yearOfPublishing.getYear()}"></dd>
+                                </dl>
+                                <dl class="item-property">
+                                    <dt>Description</dt>
+                                    <dd><p th:text="${book.description}"></p></dd>
+                                </dl>
+                                <hr>
+                                <a id="collor-button2" href="#" class="btn btn-sm btn-light"
+                                   sec:authorize="hasAnyRole('USER','STUDENT','PROFESSOR')"> Submit request </a>
+                            </article>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:style="${isRatingExistFromCurrentUser ? 'display:none' : 'display:block'}">
+            <div class="body" sec:authorize="hasAnyRole('USER','STUDENT','PROFESSOR')">
+                <div class="container">
+                    <div class="card">
+                        <br/>
+                        <form method="POST" class="well padding-bottom-10 review-form"
+                              th:action="@{/books/book(isbn=${book.isbn})}"
+                              th:object="${rating}">
+                            <textarea th:field="${rating.review}" rows="2" class="form-control shadow-success"
+                                      placeholder="Write a review"></textarea>
+                            <br>
+                            <h6>Your rating</h6>
+                            <fieldset class="rating">
+                                <input th:field="${rating.ratingValue}" type="radio" id="star5" name="rating"
+                                       th:value="5"/><label class="full" for="star5"
+                                                            title="Awesome - 5 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star4half" name="rating"
+                                       th:value="4.5"/><label class="half"
+                                                              for="star4half"
+                                                              title="Pretty good - 4.5 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star4" name="rating"
+                                       th:value="4"/><label class="full" for="star4"
+                                                            title="Pretty good - 4 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star3half" name="rating"
+                                       th:value="3.5"/><label class="half"
+                                                              for="star3half"
+                                                              title="Meh - 3.5 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star3" name="rating"
+                                       th:value="3"/><label class="full" for="star3"
+                                                            title="Meh - 3 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star2half" name="rating"
+                                       th:value="2.5"/><label class="half"
+                                                              for="star2half"
+                                                              title="Kinda bad - 2.5 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star2" name="rating"
+                                       th:value="2"/><label class="full" for="star2"
+                                                            title="Kinda bad - 2 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star1half" name="rating"
+                                       th:value="1.5"/><label class="half"
+                                                              for="star1half"
+                                                              title="Meh - 1.5 stars"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="star1" name="rating"
+                                       th:value="1"/><label class="full" for="star1"
+                                                            title="Sucks big time - 1 star"></label>
+                                <input th:field="${rating.ratingValue}" type="radio" id="starhalf" name="rating"
+                                       th:value="0.5"/><label class="half"
+                                                              for="starhalf"
+                                                              title="Sucks big time - 0.5 stars"></label>
+                            </fieldset>
+                            <div class="margin-top-10">
+                                <button id="collor-button" type="submit" class="btn btn-sm btn-light pull-right">
+                                    Submit Review
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <th:block th:each="rating : ${ratings}">
+            <div class="body">
+                <div class="container">
+                    <div class="card">
+                        <div class="reviews-members pt-4 pb-4">
+                            <div class="media review-form">
+                                <a href="#"><img alt="Generic placeholder image"
+                                                 th:src="${rating.getUser().isLogoExist()} ? '/images/' + ${rating.getUser().getEmail()} + '.jpg' :
+                                                '/images/defaultAccountLogo.png'"
+                                                 class="mr-3 rounded-pill" width="50"></a>
+                                <div class="media-body">
+                                    <div class="reviews-members-header">
+                                        <p class="text-gray" th:text="${rating.parseDateOfPost()}"></p>
+                                        <h6 class="mb-1"><a class="text-black"
+                                                            th:text="${rating.getUser().firstName + ' '
+                                                            + rating.getUser().lastName}"></a>
+                                        </h6>
+                                <div th:if="${rating.ratingValue > 0 && rating.ratingValue <= 1}" class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 1 && rating.ratingValue <= 1.5}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
+                                        class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 1.5 && rating.ratingValue <= 2}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 2 && rating.ratingValue <= 2.5}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-half-o gold"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 2.5 && rating.ratingValue <= 3}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 3 && rating.ratingValue <= 3.5}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 3.5 && rating.ratingValue <= 4}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-o"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 4 && rating.ratingValue <= 4.5}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star-half-o gold"></i>
+                                </div>
+                                <div th:if="${rating.ratingValue > 4.5 && rating.ratingValue <= 5}"
+                                     class="product-rating">
+                                    <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                        class="fa fa-star gold"></i>
+                                </div>
+                                    </div>
+                                    <div class="reviews-members-body">
+                                        <p th:text="${rating.getReview()}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div th:insert="mainTemplate :: #footer-selector"></div>
+    </div>
 </div>
-<div style="width: 500px;">
-    <p class="breadcrumb" th:text="'Book id : ' + ${book.getId()}"></p>
-    <p class="breadcrumb" th:text="'Book isbn : ' + ${book.getIsbn()}"></p>
-    <p class="breadcrumb" th:text="'Book name : ' + ${book.getName()}"></p>
-    <p class="breadcrumb" th:text="'Book author : ' + ${book.getAuthor()}"></p>
-    <p class="breadcrumb" th:text="'Book description : ' + ${book.getDescription()}"></p>
-</div>
-
-
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>

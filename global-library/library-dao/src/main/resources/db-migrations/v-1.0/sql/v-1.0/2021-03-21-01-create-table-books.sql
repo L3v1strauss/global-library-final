@@ -26,6 +26,7 @@ CREATE TABLE `book`
     `description`     TEXT NULL,
     `genre_id`        BIGINT NULL,
     `publisher_id`    BIGINT NULL,
+    `quantity`        INT NULL,
     `date_creation`   TIMESTAMP NULL,
     FOREIGN KEY (genre_id) REFERENCES genre (id),
     FOREIGN KEY (publisher_id) REFERENCES publisher (id)
@@ -34,7 +35,7 @@ CREATE TABLE `book`
 CREATE TABLE `book_author`
 (
     `book_id`   BIGINT NOT NULL,
-    `author_id` BIGINT    NOT NULL,
+    `author_id` BIGINT NOT NULL,
     PRIMARY KEY (book_id, author_id),
     CONSTRAINT FK_book FOREIGN KEY (book_id)
         REFERENCES book (id) ON DELETE CASCADE,

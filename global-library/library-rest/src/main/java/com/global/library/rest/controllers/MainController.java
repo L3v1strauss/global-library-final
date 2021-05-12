@@ -16,7 +16,6 @@ public class MainController {
 
     private final IUserService userService;
 
-    @Autowired
     public MainController(IUserService userService) {
         this.userService = userService;
     }

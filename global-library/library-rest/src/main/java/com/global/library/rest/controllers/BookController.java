@@ -2,12 +2,9 @@ package com.global.library.rest.controllers;
 
 import com.global.library.api.dto.BookDto;
 import com.global.library.api.dto.GenreDtoQueryNames;
+import com.global.library.api.dto.RatingDto;
 import com.global.library.api.services.IBookService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import com.global.library.api.services.IRatingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
+import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -26,32 +22,38 @@ import java.util.stream.IntStream;
 public class BookController {
 
     private final IBookService bookService;
+    private final IRatingService ratingService;
 
-    @Autowired
-    public BookController(IBookService bookService) {
+    public BookController(IBookService bookService, IRatingService ratingService) {
         this.bookService = bookService;
+        this.ratingService = ratingService;
     }
 
-    @GetMapping("/book/get")
-    public String findBook(@RequestParam(value = "isbn") String isbn, Model model) {
+    @GetMapping("/books/book")
+    public String findBook(@RequestParam(value = "isbn") String isbn, Model model, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("isRatingExistFromCurrentUser", this.ratingService.isRatingExistFromCurrentUser(isbn, principal.getName()));
+        } else {
+            model.addAttribute("isRatingExistFromCurrentUser", false);
+        }
+        model.addAttribute("rating", new RatingDto());
+        model.addAttribute("averageRating", this.ratingService.getAverageRatingForBook(isbn));
+        model.addAttribute("ratings", this.ratingService.getRatingsOrderByDateOfPOst(isbn));
         model.addAttribute("book", this.bookService.getBookByIsbn(isbn));
         return "bookPage";
     }
 
     @GetMapping("/books")
     public String getBooks(@ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
-                           @RequestParam(value = "page", defaultValue = "1") Integer pageNumber,
-                           @RequestParam(value = "size", defaultValue = "5") Integer pageSize,
+                           @RequestParam(value = "page", defaultValue = "1") int pageNumber,
+                           @RequestParam(value = "size", defaultValue = "5") int pageSize,
                            Model model) {
+        List<BookDto> booksPerPage = this.bookService.getBooksWithPagination(pageNumber, pageSize);
+        List<BookDto> allBooks = this.bookService.getBooks();
         model.addAttribute("request", "");
-        model.addAttribute("books", this.bookService.getBooksWithPagination(pageNumber, pageSize));
-        Pageable page = PageRequest.of(pageNumber - 1, pageSize);
-        int totalRows = this.bookService.getBooks().size();
-        Page<BookDto> result = new PageImpl<>(this.bookService.getBooksWithPagination(pageNumber, pageSize),
-                PageRequest.of(page.getPageNumber(), page.getPageSize()),
-                this.bookService.getBooks().size());
-        model.addAttribute("bookPage", result);
-        int totalPages =  result.getTotalPages();
+        model.addAttribute("books", booksPerPage);
+        model.addAttribute("bookPage", this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize));
+        int totalPages =  this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize).getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                     .boxed()
@@ -64,9 +66,21 @@ public class BookController {
     @GetMapping("/books/search")
     public String getBooksBySearch(@ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
                                    @RequestParam(value = "request") String request,
+                                   @RequestParam(value = "page", defaultValue = "1") int pageNumber,
+                                   @RequestParam(value = "size", defaultValue = "5") int pageSize,
                                    Model model) {
+        List<BookDto> booksPerPage = this.bookService.getBooksBySearchRequestWithPagination(request, pageNumber, pageSize);
+        List<BookDto> allBooks = this.bookService.getBooksBySearchRequest(request);
         model.addAttribute("request", request);
-        model.addAttribute("books", this.bookService.getBooksBySearchRequest(request));
+        model.addAttribute("books", booksPerPage);
+        model.addAttribute("bookPage", this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize));
+        int totalPages =  this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize).getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
         return "bookAllBooksSearchResult";
     }
 
