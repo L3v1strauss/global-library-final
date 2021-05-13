@@ -27,7 +27,7 @@
               </span>
                     </form>
                 </div>
-                <!--for demo wrap-->
+                <p th:if="${request != null}">Showing results for "[[${request}]]"</p>
                 <h2>All users</h2>
                 <div class="tbl-header">
                     <table cellpadding="0" cellspacing="0" border="0">

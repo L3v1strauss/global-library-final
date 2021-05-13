@@ -15,14 +15,8 @@ public interface IBookDao extends IAGenericDao<Book> {
 
     List<Book> findBooksBySearchRequest(String request);
 
-    List<Book> findBooksBySearchRequestWithPagination(String request, int pageNumber, int pageSize);
-
     List<Book> findBooksByCheckBoxGenreQueryNames(GenreDtoQueryNames queryGenreNames);
 
-    List<Book> findBooksWithPagination(Integer pageNumber, Integer pageSize);
-
     boolean isBookExistByIsbn(String isbn);
-
-    TypedQuery<Book> getTypedQueryForBooksSearch(String request);
 
 }

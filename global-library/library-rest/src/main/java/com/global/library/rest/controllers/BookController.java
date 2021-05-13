@@ -5,6 +5,10 @@ import com.global.library.api.dto.GenreDtoQueryNames;
 import com.global.library.api.dto.RatingDto;
 import com.global.library.api.services.IBookService;
 import com.global.library.api.services.IRatingService;
+import com.global.library.rest.utils.PaginationUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping()
@@ -37,8 +39,6 @@ public class BookController {
             model.addAttribute("isRatingExistFromCurrentUser", false);
         }
         model.addAttribute("rating", new RatingDto());
-        model.addAttribute("averageRating", this.ratingService.getAverageRatingForBook(isbn));
-        model.addAttribute("ratings", this.ratingService.getRatingsOrderByDateOfPOst(isbn));
         model.addAttribute("book", this.bookService.getBookByIsbn(isbn));
         return "bookPage";
     }
@@ -48,18 +48,13 @@ public class BookController {
                            @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                            @RequestParam(value = "size", defaultValue = "5") int pageSize,
                            Model model) {
-        List<BookDto> booksPerPage = this.bookService.getBooksWithPagination(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         List<BookDto> allBooks = this.bookService.getBooks();
-        model.addAttribute("request", "");
+        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
+        List<BookDto> booksPerPage = page.getContent();
+        model.addAttribute("bookPage", page);
         model.addAttribute("books", booksPerPage);
-        model.addAttribute("bookPage", this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize));
-        int totalPages =  this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize).getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
+        model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
         return "bookAllBooks";
     }
 
@@ -69,27 +64,30 @@ public class BookController {
                                    @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                                    @RequestParam(value = "size", defaultValue = "5") int pageSize,
                                    Model model) {
-        List<BookDto> booksPerPage = this.bookService.getBooksBySearchRequestWithPagination(request, pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         List<BookDto> allBooks = this.bookService.getBooksBySearchRequest(request);
+        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
+        List<BookDto> booksPerPage = page.getContent();
         model.addAttribute("request", request);
+        model.addAttribute("bookPage", page);
         model.addAttribute("books", booksPerPage);
-        model.addAttribute("bookPage", this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize));
-        int totalPages =  this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize).getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-        return "bookAllBooksSearchResult";
+        model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
+        return "bookAllBooks";
     }
 
     @GetMapping("/books/filter/genre")
     public String getBooksByGenre(@ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
-                                  Model model) {
-        model.addAttribute("request", "");
-        model.addAttribute("books", this.bookService.getBooksByQueryNames(queryGenreNames));
-        return "bookAllBooksCheckBoxByGenreResult";
+                                  Model model,
+                                  @RequestParam(value = "page", defaultValue = "1") int pageNumber,
+                                  @RequestParam(value = "size", defaultValue = "5") int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        List<BookDto> allBooks = this.bookService.getBooksByQueryNames(queryGenreNames);
+        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
+        List<BookDto> booksPerPage = page.getContent();
+        model.addAttribute("bookPage", page);
+        model.addAttribute("books", booksPerPage);
+        model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
+        return "bookAllbooks";
     }
 
 

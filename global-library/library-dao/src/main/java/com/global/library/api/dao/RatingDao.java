@@ -15,17 +15,6 @@ public class RatingDao extends AGenericDao<Rating> implements IRatingDao {
         super(Rating.class);
     }
 
-    public List<Rating> findAllRatingsOrderByDateOfPost(String isbn) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Rating> query = builder.createQuery(getGenericClass());
-        Root<Rating> ratingRoot = query.from(Rating.class);
-        Join<Rating, Book> bookJoin = ratingRoot.join(Rating_.book);
-        query.select(ratingRoot).where(builder.equal(bookJoin.get(Book_.isbn), isbn))
-                .orderBy(builder.desc(ratingRoot.get(Rating_.dateOfpost)));
-        TypedQuery<Rating> result = entityManager.createQuery(query);
-        return result.getResultList();
-    }
-
     public boolean isRatingExistFromCurrentUser(String isbn, String email) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Rating> query = builder.createQuery(getGenericClass());
@@ -36,17 +25,6 @@ public class RatingDao extends AGenericDao<Rating> implements IRatingDao {
                 builder.equal(userJoin.get(User_.email), email));
         TypedQuery<Rating> result = entityManager.createQuery(query);
         return result.getResultList().stream().findFirst().isPresent();
-    }
-
-    public Double findAverageRatingForBook(String isbn) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Double> query = builder.createQuery(Double.class);
-        Root<Rating> ratingRoot = query.from(Rating.class);
-        Join<Rating, Book> bookJoin = ratingRoot.join(Rating_.book);
-        query.select(builder.avg(ratingRoot.get(Rating_.ratingValue))).where(builder.equal(bookJoin.get(Book_.isbn), isbn))
-                .orderBy(builder.desc(ratingRoot.get(Rating_.dateOfpost)));
-        TypedQuery<Double> result = entityManager.createQuery(query);
-        return result.getSingleResult();
     }
 
     public List<Double> findAllAverageRatingsWithPagination(Integer pageNumber, Integer pageSize) {

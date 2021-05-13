@@ -58,7 +58,8 @@ public class Book extends AEntity<Long> {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, orphanRemoval = true,
+    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
+            orphanRemoval = true,
             mappedBy = "book",
             fetch = FetchType.LAZY)
     private List<Rating> ratings;

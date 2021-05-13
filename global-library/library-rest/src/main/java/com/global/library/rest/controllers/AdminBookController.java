@@ -2,7 +2,11 @@ package com.global.library.rest.controllers;
 
 import com.global.library.api.dto.BookDto;
 import com.global.library.api.services.IBookService;
+import com.global.library.rest.utils.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,9 +38,6 @@ public class AdminBookController {
         if (bindingResult.hasErrors()) {
             return "adminAddBook";
         }
-//        if(this.bookService.isBookExistByIsbn(book.getIsbn())){
-//            model.addAttribute("isbnError", "Book with that ISBN already exists");
-//        }
         this.bookService.addBook(book);
         return "redirect:/admin/books";
     }
@@ -45,18 +46,13 @@ public class AdminBookController {
     public String getBooks(Model model,
                            @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                            @RequestParam(value = "size", defaultValue = "5") int pageSize) {
-        List<BookDto> booksPerPage = this.bookService.getBooksWithPagination(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         List<BookDto> allBooks = this.bookService.getBooks();
-        model.addAttribute("request", "");
+        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
+        List<BookDto> booksPerPage = page.getContent();
+        model.addAttribute("bookPage", page);
         model.addAttribute("books", booksPerPage);
-        model.addAttribute("bookPage", this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize));
-        int totalPages =  this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize).getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
+        model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
         return "adminAllBooks";
     }
 
@@ -77,19 +73,15 @@ public class AdminBookController {
                                    @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                                    @RequestParam(value = "size", defaultValue = "5") int pageSize,
                                    Model model) {
-        List<BookDto> booksPerPage = this.bookService.getBooksBySearchRequestWithPagination(request, pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         List<BookDto> allBooks = this.bookService.getBooksBySearchRequest(request);
+        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
+        List<BookDto> booksPerPage = page.getContent();
         model.addAttribute("request", request);
+        model.addAttribute("bookPage", page);
         model.addAttribute("books", booksPerPage);
-        model.addAttribute("bookPage", this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize));
-        int totalPages =  this.bookService.getPageBookDto(booksPerPage, allBooks, pageNumber, pageSize).getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-        return "adminAllBooksSearchResult";
+        model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
+        return "adminAllbooks";
     }
 
 

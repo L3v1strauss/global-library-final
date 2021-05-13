@@ -44,7 +44,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         return result.getSingleResult();
     }
 
-    public TypedQuery<Book> getTypedQueryForBooksSearch(String request) {
+    public List<Book> findBooksBySearchRequest(String request)  {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
         Root<Book> bookRoot = query.from(Book.class);
@@ -68,17 +68,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         Order order = builder.desc(objectCase);
         query.select(bookRoot).where(finalPredicate).distinct(true).orderBy(order);
         TypedQuery<Book> result = entityManager.createQuery(query);
-        return result;
-    }
-
-   public List<Book> findBooksBySearchRequest(String request) {
-       return getTypedQueryForBooksSearch(request).getResultList();
-    }
-    public List<Book> findBooksBySearchRequestWithPagination(String request, int pageNumber, int pageSize) {
-        return getTypedQueryForBooksSearch(request)
-                .setFirstResult((pageNumber - 1) * pageSize)
-                .setMaxResults(pageSize)
-                .getResultList();
+        return result.getResultList();
     }
 
     public List<Book> findBooksByCheckBoxGenreQueryNames(GenreDtoQueryNames queryGenreNames) {
@@ -98,16 +88,6 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         return result.getResultList();
     }
 
-    public List<Book> findBooksWithPagination(Integer pageNumber, Integer pageSize) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
-        Root<Book> bookRoot = query.from(Book.class);
-        query.select(bookRoot).distinct(true);
-        TypedQuery<Book> result = entityManager.createQuery(query);
-        return result
-                .setFirstResult((pageNumber - 1) * pageSize)
-                .setMaxResults(pageSize)
-                .getResultList();
-    }
+
 
 }

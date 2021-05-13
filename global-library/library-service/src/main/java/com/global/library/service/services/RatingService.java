@@ -52,18 +52,6 @@ public class RatingService implements IRatingService {
 
     @Override
     @Transactional
-    public List<RatingDto> getRatingsOrderByDateOfPOst(String isbn) {
-        return RatingMapper.mapAllRatingsDto(this.ratingDao.findAllRatingsOrderByDateOfPost(isbn));
-    }
-
-    @Override
-    @Transactional
-    public Double getAverageRatingForBook(String isbn) {
-        return this.ratingDao.findAverageRatingForBook(isbn);
-    }
-
-    @Override
-    @Transactional
     public List<Double> getAllAverageRatingsWithPagination(int pageNumber, int pageSize) {
         return this.ratingDao.findAllAverageRatingsWithPagination(pageNumber, pageSize);
     }

@@ -13,10 +13,6 @@ public interface IRatingService {
 
     boolean isRatingExistFromCurrentUser(String isbn, String email);
 
-    List<RatingDto> getRatingsOrderByDateOfPOst(String isbn);
-
-    Double getAverageRatingForBook(String isbn);
-
     List<Double> getAllAverageRatingsWithPagination(int pageNumber, int pageSize);
 
     List<Double> getAllAverageRatingsWithPaginationAndSearchRequest(String request, int pageNumber, int pageSize);

@@ -64,7 +64,8 @@ public class User extends AEntity<Long> {
             fetch = FetchType.LAZY)
     private List<Extradition> extraditions;
 
-    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, orphanRemoval = true,
+    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
+            orphanRemoval = true,
             mappedBy = "user",
             fetch = FetchType.LAZY)
     private List<Rating> ratings;

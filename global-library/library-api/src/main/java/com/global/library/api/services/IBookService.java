@@ -25,17 +25,8 @@ public interface IBookService {
 
     List<BookDto> getBooksBySearchRequest(String request);
 
-    List<BookDto> getBooksBySearchRequestWithPagination(String request, int pageNumber, int pageSize);
-
     List<BookDto> getBooksByQueryNames(GenreDtoQueryNames queryGenreNames);
 
-    List<BookDto> getBooksWithPagination(Integer pageNumber, Integer pageSize);
-
-    void setPublisherToBook(Book book, Map<String, String> bookDetails);
-
-    void setAuthorToBook(Book book, Map<String, String> bookDetails);
-
-    Page<BookDto> getPageBookDto(List<BookDto> listBooksPerPage, List<BookDto> allBooks, int pageNumber, int pageSize);
 
 
 }

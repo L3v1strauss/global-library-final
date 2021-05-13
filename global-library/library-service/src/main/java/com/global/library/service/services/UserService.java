@@ -1,19 +1,18 @@
 package com.global.library.service.services;
 
 import com.global.library.api.dao.IUserDao;
-import com.global.library.api.dto.BookDto;
 import com.global.library.api.dto.UserDto;
 import com.global.library.api.dto.UserDtoMyAccount;
 import com.global.library.api.dto.UserDtoPasswordChange;
 import com.global.library.api.enums.RoleName;
-import com.global.library.api.mappers.BookMapper;
+import com.global.library.api.enums.UserStatus;
 import com.global.library.api.mappers.UserDetailMapper;
 import com.global.library.api.mappers.UserMapper;
 import com.global.library.api.services.IUserService;
 import com.global.library.api.utils.IEmailSendler;
+import com.global.library.entity.Role;
 import com.global.library.entity.User;
 import com.global.library.entity.UserDetail;
-import com.global.library.service.utils.AccountSetting;
 import com.global.library.service.utils.LogoFileUploader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -93,8 +92,8 @@ public class UserService implements IUserService {
         entity.setDateOfCreation(LocalDateTime.now());
         entity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         entity.setUserDetails(userDetail);
-        AccountSetting.roleAddOrChange(entity, user.getRoleName());
-        AccountSetting.startStatusChange(entity, user.getRoleName());
+        roleAddOrChange(entity, user.getRoleName());
+        startStatusChange(entity, user.getRoleName());
         userDetail.setUser(entity);
         this.userDao.create(entity);
         if (!user.getRoleName().equals(RoleName.ROLE_USER.name())) {
@@ -106,8 +105,30 @@ public class UserService implements IUserService {
     @Transactional
     public void roleChangeUser(long id, UserDto user) {
         User entity = this.userDao.get(id);
-        AccountSetting.roleAddOrChange(entity, user.getRoleName());
+        roleAddOrChange(entity, user.getRoleName());
         this.userDao.update(entity);
+    }
+
+    private void roleAddOrChange(User user, String roleName) {
+        for (RoleName value : RoleName.values()) {
+            if (value.name().equals(roleName)) {
+                if (!user.getRoles().isEmpty()) {
+                    user.getRoles().clear();
+                }
+                user.getRoles().add(Role.builder()
+                        .id(value.getId())
+                        .name(value.toString())
+                        .build());
+            }
+        }
+    }
+
+    private void startStatusChange(User user, String roleName) {
+        if (roleName.equals(RoleName.ROLE_USER.name())) {
+            user.setStatus(UserStatus.Enabled.getId());
+        } else {
+            user.setStatus(UserStatus.Disabled.getId());
+        }
     }
 
     @Override

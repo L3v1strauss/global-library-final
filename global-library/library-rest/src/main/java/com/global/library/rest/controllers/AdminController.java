@@ -32,7 +32,6 @@ public class AdminController {
 
     @GetMapping("/users")
     public String getUsers(Model model) {
-        model.addAttribute("request", new String());
         model.addAttribute("users", this.userService.getAllUsers());
         return "adminAllUsers";
     }
@@ -69,6 +68,6 @@ public class AdminController {
     public String getUsersBySearch(@RequestParam(value = "request") String request, Model model) {
         model.addAttribute("request", request);
         model.addAttribute("users", this.userService.getUsersBySearchRequest(request));
-        return "adminAllUsersSearchResult";
+        return "adminAllUsers";
     }
 }

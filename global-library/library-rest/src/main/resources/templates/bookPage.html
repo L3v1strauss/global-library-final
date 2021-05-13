@@ -31,53 +31,53 @@
                                 <span th:each="author : ${book.authors}" th:text="${author.name == book.getAuthors()[0].name}
                                                             ? *{author.name} : ' & ' + *{author.name}"></span>
                                 <p class="price-detail-wrap">
-                                <div th:if="${averageRating > 0 && averageRating < 1}" class="product-rating">
+                                <div th:if="${book.averageRating > 0 && book.averageRating < 1}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
                                         class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
                                         class="fa fa-star-o"></i>
                                 </div>
-                                <div th:if="${averageRating > 1 && averageRating <= 1.5}" class="product-rating">
+                                <div th:if="${book.averageRating > 1 && book.averageRating <= 1.5}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
                                         class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
                                         class="fa fa-star-o"></i>
                                 </div>
-                                <div th:if="${averageRating > 1.5 && averageRating <= 2}" class="product-rating">
+                                <div th:if="${book.averageRating > 1.5 && book.averageRating <= 2}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
                                         class="fa fa-star-o"></i>
                                 </div>
-                                <div th:if="${averageRating > 2 && averageRating <= 2.5}" class="product-rating">
+                                <div th:if="${book.averageRating > 2 && book.averageRating <= 2.5}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star-half-o gold"></i><i class="fa fa-star-o"></i><i
                                         class="fa fa-star-o"></i>
                                 </div>
-                                <div th:if="${averageRating > 2.5 && averageRating <= 3}" class="product-rating">
+                                <div th:if="${book.averageRating > 2.5 && book.averageRating <= 3}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
                                         class="fa fa-star-o"></i>
                                 </div>
-                                <div th:if="${averageRating > 3 && averageRating <= 3.5}" class="product-rating">
+                                <div th:if="${book.averageRating > 3 && book.averageRating <= 3.5}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
                                         class="fa fa-star-o"></i>
                                 </div>
-                                <div th:if="${averageRating > 3.5 && averageRating <= 4}" class="product-rating">
+                                <div th:if="${book.averageRating > 3.5 && book.averageRating <= 4}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star-o"></i>
                                 </div>
-                                <div th:if="${averageRating > 4 && averageRating <= 4.5}" class="product-rating">
+                                <div th:if="${book.averageRating > 4 && book.averageRating <= 4.5}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star-half-o gold"></i>
                                 </div>
-                                <div th:if="${averageRating > 4.5 && averageRating <= 5}" class="product-rating">
+                                <div th:if="${book.averageRating > 4.5 && book.averageRating <= 5}" class="product-rating">
                                     <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
                                         class="fa fa-star gold"></i>
                                 </div>
                                 <span class="price h3 text-warning">
-		                       <span class="num" th:text="${averageRating}"></span>
+		                       <span class="num" th:text="${book.parseAverageRating()}"></span>
 	                                   </span>
                                 </p>
                                 <dl class="param param-feature">
@@ -168,7 +168,7 @@
                 </div>
             </div>
         </div>
-        <th:block th:each="rating : ${ratings}">
+        <th:block th:each="rating : ${book.getRatings()}">
             <div class="body">
                 <div class="container">
                     <div class="card">
