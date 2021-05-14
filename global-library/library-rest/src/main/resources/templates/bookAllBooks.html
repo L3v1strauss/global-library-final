@@ -7,6 +7,7 @@
     <link href="/styles/mainTemplate.css" rel="stylesheet"/>
     <link href="/styles/bookAllBooks.css" rel="stylesheet"/>
     <link href="/styles/pagination.css" rel="stylesheet"/>
+    <link href="/styles/secondSelect.css" rel="stylesheet"/>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css} "/>
     <script src="https://use.fontawesome.com/1deb41b553.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -24,7 +25,7 @@
                                     <div class="col-md-3">
                                         <h5 class="grid-title"><i class="fa fa-filter"></i> Filters</h5>
                                         <hr>
-                                        <form id="form-filter" th:method="GET" th:action="@{/books/filter/genre}"
+                                        <form id="form-filter" th:method="POST" th:action="@{/books}"
                                               th:object="${genres}">
                                             <h5>By genre:</h5>
                                             <div class="checkbox">
@@ -53,38 +54,47 @@
                                     <div class="col-md-9">
                                         <h5><i class="fa fa-file-o"></i> Books</h5>
                                         <hr>
-                                        <form th:method="GET" th:action="@{/books/search(request = ${request})}">
+                                        <form th:method="GET"
+                                              th:action="@{/books(search = ${search}, orderBy = ${orderBy})}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control shadow-success"
-                                                       th:value="${request}" id="request" name="request">
+                                                       th:value="${search}" id="search" name="search">
                                                 <span class="input-group-btn">
-                                            <button id="collor-button" class="btn btn-light shadow-success" type="submit"><i
+                                            <button id="collor-button" class="btn btn-light shadow-success"
+                                                    type="submit"><i
                                                     class="fa fa-search"></i></button></span>
                                             </div>
+                                            <p th:if="${search != ''}">Showing results for "[[${search}]]"</p>
+                                            <div class="padding"></div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <div class="form-group">
+
+                                                        <label th:for="select-box"
+                                                               class="label select-box1">
+                                                            <span class="label-desc">Order by</span></label>
+                                                        <select th:id="select-box" class="select"
+                                                                th:value="${orderBy}" th:name="orderBy"
+                                                                onchange="this.form.submit()">
+                                                            <option style="display: none"></option>
+                                                            <option th:value="'name'">Name</option>
+                                                            <option th:value="'rating'">Rating</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 text-right">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default active"><i
+                                                                class="fa fa-list"></i></button>
+                                                        <button type="button" class="btn btn-default"><i
+                                                                class="fa fa-th"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </form>
-                                        <p th:if="${request != null}">Showing results for "[[${request}]]"</p>
-                                        <div class="padding"></div>
-                                        <div class="row">
-                                            <div class="col-sm-3">
-                                                <div class="form-group">
-                                                    <select class="form-control shadow-success"
-                                                            id="exampleFormControlSelect1">
-                                                        <option>Order by</option>
-                                                        <option>Name</option>
-                                                        <option>Rating</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 text-right">
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-default active"><i
-                                                            class="fa fa-list"></i></button>
-                                                    <button type="button" class="btn btn-default"><i
-                                                            class="fa fa-th"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <th:block th:each="book : ${books}">
                                             <div class="table-responsive">
 
@@ -105,61 +115,81 @@
                                                             </p>
                                                         </td>
                                                         <td class="rate text-right">
-                                                            <div th:if="${book.averageRating > 0 && book.averageRating <= 1}" class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
-                                                                    class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                                            <div th:if="${book.averageRating > 0 && book.averageRating <= 1}"
+                                                                 class="product-rating">
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i><i
                                                                     class="fa fa-star-o"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 1 && book.averageRating <= 1.5}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
-                                                                    class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-half-o gold"></i><i
+                                                                    class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i><i
                                                                     class="fa fa-star-o"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 1.5 && book.averageRating <= 2}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
-                                                                    class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-o"></i><i
+                                                                    class="fa fa-star-o"></i><i
                                                                     class="fa fa-star-o"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 2 && book.averageRating <= 2.5}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
-                                                                    class="fa fa-star-half-o gold"></i><i class="fa fa-star-o"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-half-o gold"></i><i
+                                                                    class="fa fa-star-o"></i><i
                                                                     class="fa fa-star-o"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 2.5 && book.averageRating <= 3}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
-                                                                    class="fa fa-star gold"></i><i class="fa fa-star-o"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-o"></i><i
                                                                     class="fa fa-star-o"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 3 && book.averageRating <= 3.5}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
-                                                                    class="fa fa-star gold"></i><i class="fa fa-star-half-o gold"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star-half-o gold"></i><i
                                                                     class="fa fa-star-o"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 3.5 && book.averageRating <= 4}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
-                                                                    class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
                                                                     class="fa fa-star-o"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 4 && book.averageRating <= 4.5}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
-                                                                    class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
                                                                     class="fa fa-star-half-o gold"></i>
                                                             </div>
                                                             <div th:if="${book.averageRating > 4.5 && book.averageRating <= 5}"
                                                                  class="product-rating">
-                                                                <i class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
-                                                                    class="fa fa-star gold"></i><i class="fa fa-star gold"></i><i
+                                                                <i class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
+                                                                    class="fa fa-star gold"></i><i
                                                                     class="fa fa-star gold"></i>
                                                             </div>
                                                         </td>
-                                                        <td class="price text-right" th:text="${book.parseAverageRating()}"></td>
+                                                        <td class="price text-right"
+                                                            th:text="${book.parseAverageRating()}"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -170,7 +200,7 @@
                                                 <li class="page-item" th:if="${bookPage.totalPages > 0}"
                                                     th:each="pageNumber : ${pageNumbers}">
                                                     <a class="page-link"
-                                                       th:href="@{/books(size=${bookPage.size}, page=${pageNumber})}"
+                                                       th:href="@{/books(size=${bookPage.size}, page=${pageNumber},search = ${search},orderBy = ${orderBy})}"
                                                        th:text="${pageNumber}">
                                                     </a>
                                                 </li>

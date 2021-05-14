@@ -13,10 +13,12 @@ public interface IBookDao extends IAGenericDao<Book> {
 
     List<Book> findAllBooksOrderByDateOfCreation();
 
-    List<Book> findBooksBySearchRequest(String request);
+    List<Book> findBooksBySearchRequest(String search);
 
     List<Book> findBooksByCheckBoxGenreQueryNames(GenreDtoQueryNames queryGenreNames);
 
     boolean isBookExistByIsbn(String isbn);
+
+    List<Book> findAllBooksOrderByName();
 
 }

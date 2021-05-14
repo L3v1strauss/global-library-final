@@ -11,10 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -44,44 +41,37 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public String getBooks(@ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
-                           @RequestParam(value = "page", defaultValue = "1") int pageNumber,
+    public String getBooks(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
                            @RequestParam(value = "size", defaultValue = "5") int pageSize,
+                           @RequestParam(value = "orderBy", defaultValue = "") String orderBy,
+                           @RequestParam(value = "search", defaultValue = "") String search,
+                           @ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
                            Model model) {
+        List<BookDto> allBooks = this.bookService.getBooks(orderBy);
+        if (!search.isEmpty()) {
+            allBooks = this.bookService.getBooksBySearchRequest(search, orderBy);
+        }
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        List<BookDto> allBooks = this.bookService.getBooks();
         Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
         List<BookDto> booksPerPage = page.getContent();
+        model.addAttribute("orderBy", orderBy);
+        model.addAttribute("search", search);
         model.addAttribute("bookPage", page);
         model.addAttribute("books", booksPerPage);
         model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
         return "bookAllBooks";
     }
 
-    @GetMapping("/books/search")
-    public String getBooksBySearch(@ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
-                                   @RequestParam(value = "request") String request,
-                                   @RequestParam(value = "page", defaultValue = "1") int pageNumber,
-                                   @RequestParam(value = "size", defaultValue = "5") int pageSize,
-                                   Model model) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        List<BookDto> allBooks = this.bookService.getBooksBySearchRequest(request);
-        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
-        List<BookDto> booksPerPage = page.getContent();
-        model.addAttribute("request", request);
-        model.addAttribute("bookPage", page);
-        model.addAttribute("books", booksPerPage);
-        model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
-        return "bookAllBooks";
-    }
-
-    @GetMapping("/books/filter/genre")
-    public String getBooksByGenre(@ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
-                                  Model model,
-                                  @RequestParam(value = "page", defaultValue = "1") int pageNumber,
-                                  @RequestParam(value = "size", defaultValue = "5") int pageSize) {
+    @PostMapping("/books")
+    public String getBooksByGenre(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+                                  @RequestParam(value = "size", defaultValue = "5") int pageSize,
+                                  @ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
+                                  Model model) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         List<BookDto> allBooks = this.bookService.getBooksByQueryNames(queryGenreNames);
+        if (allBooks.isEmpty()) {
+            allBooks = this.bookService.getBooks();
+        }
         Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
         List<BookDto> booksPerPage = page.getContent();
         model.addAttribute("bookPage", page);

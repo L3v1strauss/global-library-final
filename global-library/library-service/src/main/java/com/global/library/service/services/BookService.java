@@ -8,9 +8,9 @@ import com.global.library.api.dto.BookDto;
 import com.global.library.api.dto.GenreDtoQueryNames;
 import com.global.library.api.dto.RatingDto;
 import com.global.library.api.enums.GenreName;
+import com.global.library.api.enums.OrderByQuerys;
 import com.global.library.api.mappers.BookMapper;
 import com.global.library.api.services.IBookService;
-import com.global.library.api.services.IRatingService;
 import com.global.library.entity.Author;
 import com.global.library.entity.Book;
 import com.global.library.entity.Genre;
@@ -36,14 +36,12 @@ import java.util.stream.Collectors;
 public class BookService implements IBookService {
 
     private final IBookDao bookDao;
-    private final IRatingService ratingService;
     private final IAuthorDao authorDao;
     private final IPublisherDao publisherDao;
     private final WebScraper webScraper;
 
-    public BookService(IBookDao bookDao, IRatingService ratingService, IAuthorDao authorDao, IPublisherDao publisherDao, WebScraper webScraper) {
+    public BookService(IBookDao bookDao, IAuthorDao authorDao, IPublisherDao publisherDao, WebScraper webScraper) {
         this.bookDao = bookDao;
-        this.ratingService = ratingService;
         this.authorDao = authorDao;
         this.publisherDao = publisherDao;
         this.webScraper = webScraper;
@@ -101,15 +99,49 @@ public class BookService implements IBookService {
 
     @Override
     @Transactional
-    public List<BookDto> getBooksBySearchRequest(String request) {
-        List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findBooksBySearchRequest(request));
+    public List<BookDto> getBooksBySearchRequest(String search) {
+        List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findBooksBySearchRequest(search));
         for (BookDto bookDto : booksDto) {
             setAverageRatingToBookDto(bookDto);
         }
         return booksDto;
     }
+
+    @Override
+    @Transactional
+    public List<BookDto> getBooks(String orderBy) {
+        List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByDateOfCreation());
+        if(orderBy.equals(OrderByQuerys.NAME.getName())){
+            booksDto = BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByName());
+        }
+        for (BookDto bookDto : booksDto) {
+            setAverageRatingToBookDto(bookDto);
+        }
+        if (orderBy.equals(OrderByQuerys.RATING.getName())) {
+            booksDto = BookMapper.mapAllBooksDto(this.bookDao.getAll());
+            for (BookDto bookDto : booksDto) {
+                setAverageRatingToBookDto(bookDto);
+            }
+            booksDto.sort(Comparator.comparing(BookDto::getAverageRating, Comparator.reverseOrder()));
+        }
+        return booksDto;
+    }
+
+    @Override
+    @Transactional
+    public List<BookDto> getBooksBySearchRequest(String search, String orderBy) {
+        List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findBooksBySearchRequest(search));
+        for (BookDto bookDto : booksDto) {
+            setAverageRatingToBookDto(bookDto);
+        }
+        if (orderBy.equals(OrderByQuerys.RATING.getName())) {
+            booksDto.sort(Comparator.comparing(BookDto::getAverageRating, Comparator.reverseOrder()));
+        }
+        return booksDto;
+    }
     
     @Override
+    @Transactional
     public List<BookDto> getBooksByQueryNames(GenreDtoQueryNames queryGenreNames) {
         return BookMapper.mapAllBooksDto(this.bookDao.findBooksByCheckBoxGenreQueryNames(queryGenreNames));
     }
@@ -130,14 +162,14 @@ public class BookService implements IBookService {
             book.setDescription(bookDetails.get(BookDetailsNames.DESCRIPTION));
             book.setQuantity(DEFAULT_QUANTITY);
             setAuthorToBook(book, bookDetails);
-            setPublisherToBook(book, bookDetails);
+            setPublisherAndYearOfPublishingToBook(book, bookDetails);
             addGenre(bookDto.getGenreName(), book);
             book.setDateOfCreation(LocalDateTime.now());
             this.bookDao.create(book);
         }
     }
     
-    private void setPublisherToBook(Book book, Map<String, String> bookDetails) {
+    private void setPublisherAndYearOfPublishingToBook(Book book, Map<String, String> bookDetails) {
         DateTimeFormatter format = new DateTimeFormatterBuilder()
                 .appendPattern("yyyy")
                 .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)

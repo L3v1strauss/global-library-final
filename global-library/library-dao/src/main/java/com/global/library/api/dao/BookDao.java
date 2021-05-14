@@ -26,6 +26,15 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
             return result.getResultList();
     }
 
+    public List<Book> findAllBooksOrderByName() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
+        Root<Book> bookRoot = query.from(Book.class);
+        query.select(bookRoot).orderBy(builder.asc(bookRoot.get(Book_.name)));
+        TypedQuery<Book> result = entityManager.createQuery(query);
+        return result.getResultList();
+    }
+
     public boolean isBookExistByIsbn(String isbn) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
@@ -44,7 +53,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         return result.getSingleResult();
     }
 
-    public List<Book> findBooksBySearchRequest(String request)  {
+    public List<Book> findBooksBySearchRequest(String search)  {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
         Root<Book> bookRoot = query.from(Book.class);
@@ -52,7 +61,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         Join<Book, Publisher> publisherJoin = bookRoot.join(Book_.publisher);
         List<Predicate> predicates = new ArrayList<>();
         Case<Object> objectCase = builder.selectCase();
-        String[] requestWords = request.replaceAll("[\\p{P}]", " ").split(" +");
+        String[] requestWords = search.replaceAll("[\\p{P}]", " ").split(" +");
         for (String requestWord : requestWords) {
             Predicate predicate = builder.or(builder.like(bookRoot.get(Book_.isbn), "%" + requestWord + "%"),
                     builder.like(bookRoot.get(Book_.name), "%" + requestWord + "%"),
@@ -83,7 +92,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
             predicates.add(predicate);
         }
         Predicate finalPredicate = builder.or(predicates.toArray(new Predicate[0]));
-        query.select(bookRoot).where(finalPredicate).distinct(true);
+        query.select(bookRoot).where(finalPredicate);
         TypedQuery<Book> result = entityManager.createQuery(query);
         return result.getResultList();
     }

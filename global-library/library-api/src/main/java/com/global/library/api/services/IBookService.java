@@ -21,11 +21,18 @@ public interface IBookService {
 
     List<BookDto> getBooks();
 
+    List<BookDto> getBooks(String orderBy);
+
     void addBook(BookDto bookDto);
 
-    List<BookDto> getBooksBySearchRequest(String request);
+    List<BookDto> getBooksBySearchRequest(String search);
+
+    List<BookDto> getBooksBySearchRequest(String search, String orderBy);
 
     List<BookDto> getBooksByQueryNames(GenreDtoQueryNames queryGenreNames);
+
+
+
 
 
 
