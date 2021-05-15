@@ -47,7 +47,7 @@ public class AdminBookController {
                            @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                            @RequestParam(value = "size", defaultValue = "5") int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        List<BookDto> allBooks = this.bookService.getBooks();
+        List<BookDto> allBooks = this.bookService.getAllBooksOrderByDateOfCreation();
         Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
         List<BookDto> booksPerPage = page.getContent();
         model.addAttribute("bookPage", page);
@@ -70,11 +70,12 @@ public class AdminBookController {
 
     @GetMapping("/books/search")
     public String getBooksBySearch(@RequestParam(value = "request") String request,
+                                   @RequestParam(value = "orderBy", required = false) String orderBy,
                                    @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                                    @RequestParam(value = "size", defaultValue = "5") int pageSize,
                                    Model model) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        List<BookDto> allBooks = this.bookService.getBooksBySearchRequest(request);
+        List<BookDto> allBooks = this.bookService.getAllBooksBySearchAndOrderByRequestWithAvgRating(request, orderBy);
         Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
         List<BookDto> booksPerPage = page.getContent();
         model.addAttribute("request", request);

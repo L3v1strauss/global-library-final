@@ -21,11 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Tuple;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -57,27 +59,17 @@ public class BookService implements IBookService {
     @Override
     @Transactional
     public BookDto getBookByIsbn(String isbn) {
-        BookDto bookDto = BookMapper.mapBookDto(this.bookDao.findBookByIsbn(isbn));
-        if(bookDto.getRatings().isEmpty()) {
+        BookDto bookDto = BookMapper.mapBookDto(this.bookDao.findBookByIsbnWithAvgRating(isbn).get(0, Book.class));
+            bookDto.setAverageRating(this.bookDao.findBookByIsbnWithAvgRating(isbn).get(1, Double.class));
+        if (bookDto.getRatings().isEmpty()) {
             return bookDto;
         }
-        setAverageRatingToBookDto(bookDto);
         bookDto.setRatings(bookDto
                 .getRatings()
                 .stream()
                 .sorted(Comparator.comparing(RatingDto::getDateOfpost, Comparator.reverseOrder()))
                 .collect(Collectors.toList()));
         return bookDto;
-    }
-
-    private void setAverageRatingToBookDto(BookDto bookDto) {
-        double averageRating = bookDto
-                .getRatings()
-                .stream()
-                .mapToDouble(RatingDto::getRatingValue)
-                .average()
-                .orElse(0);
-        bookDto.setAverageRating(averageRating);
     }
 
     @Override
@@ -89,68 +81,39 @@ public class BookService implements IBookService {
 
     @Override
     @Transactional
-    public List<BookDto> getBooks() {
-       List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByDateOfCreation());
-        for (BookDto bookDto : booksDto) {
-            setAverageRatingToBookDto(bookDto);
-        }
-        return booksDto;
+    public List<BookDto> getAllBooksOrderByDateOfCreation() {
+        return BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByDateOfCreation());
     }
 
     @Override
     @Transactional
-    public List<BookDto> getBooksBySearchRequest(String search) {
-        List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findBooksBySearchRequest(search));
-        for (BookDto bookDto : booksDto) {
-            setAverageRatingToBookDto(bookDto);
-        }
-        return booksDto;
+    public  List<BookDto> getAllBooksWithAvgRating() {
+        return parseTupleToListBookDto( this.bookDao.findAllBooksWithAvgRating());
     }
 
     @Override
     @Transactional
-    public List<BookDto> getBooks(String orderBy) {
-        List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByDateOfCreation());
-        if(orderBy.equals(OrderByQuerys.NAME.getName())){
-            booksDto = BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByName());
-        }
-        for (BookDto bookDto : booksDto) {
-            setAverageRatingToBookDto(bookDto);
-        }
-        if (orderBy.equals(OrderByQuerys.RATING.getName())) {
-            booksDto = BookMapper.mapAllBooksDto(this.bookDao.getAll());
-            for (BookDto bookDto : booksDto) {
-                setAverageRatingToBookDto(bookDto);
-            }
-            booksDto.sort(Comparator.comparing(BookDto::getAverageRating, Comparator.reverseOrder()));
-        }
-        return booksDto;
+    public List<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy) {
+        return parseTupleToListBookDto(this.bookDao.findAllBooksOrderByRequestWithAvgRating(orderBy));
     }
 
     @Override
     @Transactional
-    public List<BookDto> getBooksBySearchRequest(String search, String orderBy) {
-        List<BookDto> booksDto = BookMapper.mapAllBooksDto(this.bookDao.findBooksBySearchRequest(search));
-        for (BookDto bookDto : booksDto) {
-            setAverageRatingToBookDto(bookDto);
-        }
-        if (orderBy.equals(OrderByQuerys.RATING.getName())) {
-            booksDto.sort(Comparator.comparing(BookDto::getAverageRating, Comparator.reverseOrder()));
-        }
-        return booksDto;
+    public List<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy) {
+      return parseTupleToListBookDto(this.bookDao.findAllBooksBySearchAndOrderByRequestWithAvgRating(search, orderBy));
     }
-    
+
     @Override
     @Transactional
-    public List<BookDto> getBooksByQueryNames(GenreDtoQueryNames queryGenreNames) {
-        return BookMapper.mapAllBooksDto(this.bookDao.findBooksByCheckBoxGenreQueryNames(queryGenreNames));
+    public List<BookDto> getAllBooksByQueryNamesWithAvgRating(GenreDtoQueryNames queryGenreNames) {
+        return parseTupleToListBookDto(this.bookDao.findAllBooksByCheckBoxGenreQueryNames(queryGenreNames));
     }
 
     @Override
     @Transactional
     public void addBook(BookDto bookDto) {
         final int DEFAULT_QUANTITY = 1;
-        if (this.bookDao.isBookExistByIsbn(bookDto.getIsbn())){
+        if (this.bookDao.isBookExistByIsbn(bookDto.getIsbn())) {
             Book book = this.bookDao.findBookByIsbn(bookDto.getIsbn());
             book.setQuantity(book.getQuantity() + DEFAULT_QUANTITY);
         } else {
@@ -168,7 +131,7 @@ public class BookService implements IBookService {
             this.bookDao.create(book);
         }
     }
-    
+
     private void setPublisherAndYearOfPublishingToBook(Book book, Map<String, String> bookDetails) {
         DateTimeFormatter format = new DateTimeFormatterBuilder()
                 .appendPattern("yyyy")
@@ -206,5 +169,16 @@ public class BookService implements IBookService {
                         .name(value.name())
                         .build());
         }
+    }
+
+    private List<BookDto> parseTupleToListBookDto(List<Tuple> tuples) {
+        List<BookDto> booksDto = new ArrayList<>();
+        int currentAddBookIndex = 0;
+        for (Tuple bookWithAvgRating : tuples) {
+            booksDto.add(BookMapper.mapBookDto(bookWithAvgRating.get(0, Book.class)));
+            booksDto.get(currentAddBookIndex).setAverageRating(bookWithAvgRating.get(1, Double.class));
+            currentAddBookIndex++;
+        }
+        return booksDto;
     }
 }

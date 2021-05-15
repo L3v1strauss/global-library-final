@@ -43,13 +43,12 @@ public class BookController {
     @GetMapping("/books")
     public String getBooks(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
                            @RequestParam(value = "size", defaultValue = "5") int pageSize,
-                           @RequestParam(value = "orderBy", defaultValue = "") String orderBy,
-                           @RequestParam(value = "search", defaultValue = "") String search,
-                           @ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
+                           @RequestParam(value = "orderBy", required = false) String orderBy,
+                           @RequestParam(value = "search", required = false) String search,
                            Model model) {
-        List<BookDto> allBooks = this.bookService.getBooks(orderBy);
-        if (!search.isEmpty()) {
-            allBooks = this.bookService.getBooksBySearchRequest(search, orderBy);
+        List<BookDto> allBooks = this.bookService.getAllBooksOrderByRequestWithAvgRating(orderBy);
+        if (search != null) {
+            allBooks = this.bookService.getAllBooksBySearchAndOrderByRequestWithAvgRating(search, orderBy);
         }
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
@@ -58,6 +57,7 @@ public class BookController {
         model.addAttribute("search", search);
         model.addAttribute("bookPage", page);
         model.addAttribute("books", booksPerPage);
+        model.addAttribute("genres", new GenreDtoQueryNames());
         model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
         return "bookAllBooks";
     }
@@ -68,9 +68,9 @@ public class BookController {
                                   @ModelAttribute("genres") GenreDtoQueryNames queryGenreNames,
                                   Model model) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        List<BookDto> allBooks = this.bookService.getBooksByQueryNames(queryGenreNames);
+        List<BookDto> allBooks = this.bookService.getAllBooksByQueryNamesWithAvgRating(queryGenreNames);
         if (allBooks.isEmpty()) {
-            allBooks = this.bookService.getBooks();
+            allBooks = this.bookService.getAllBooksWithAvgRating();
         }
         Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
         List<BookDto> booksPerPage = page.getContent();

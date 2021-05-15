@@ -2,14 +2,15 @@ package com.global.library.api.dao;
 
 
 import com.global.library.api.dto.GenreDtoQueryNames;
+import com.global.library.api.enums.OrderByQuerys;
 import com.global.library.entity.*;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.persistence.criteria.CriteriaBuilder.Case;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class BookDao extends AGenericDao<Book> implements IBookDao {
@@ -18,21 +19,41 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
     }
 
     public List<Book> findAllBooksOrderByDateOfCreation() {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
-            Root<Book> bookRoot = query.from(Book.class);
-            query.select(bookRoot).orderBy(builder.desc(bookRoot.get(Book_.dateOfCreation)));
-            TypedQuery<Book> result = entityManager.createQuery(query);
-            return result.getResultList();
-    }
-
-    public List<Book> findAllBooksOrderByName() {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
         Root<Book> bookRoot = query.from(Book.class);
-        query.select(bookRoot).orderBy(builder.asc(bookRoot.get(Book_.name)));
+        query.select(bookRoot);
         TypedQuery<Book> result = entityManager.createQuery(query);
         return result.getResultList();
+    }
+
+    public List<Tuple> findAllBooksWithAvgRating() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
+        Root<Book> bookRoot = query.from(Book.class);
+        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
+        Order order = builder.desc(bookRoot.get(Book_.dateOfCreation));
+        query.multiselect(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue)))
+                .groupBy(bookRoot.get(Book_.isbn)).orderBy(order);
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<Tuple> findAllBooksOrderByRequestWithAvgRating(String orderBy) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
+        Root<Book> bookRoot = query.from(Book.class);
+        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
+        Order order = builder.desc(bookRoot.get(Book_.isbn));
+        if (orderBy == null) {
+            order = builder.desc(bookRoot.get(Book_.dateOfCreation));
+        } else if (orderBy.equals(OrderByQuerys.NAME.getName())) {
+            order = builder.asc(bookRoot.get(Book_.name));
+        } else if (orderBy.equals(OrderByQuerys.RATING.getName())) {
+            order = builder.desc(builder.avg(ratingJoin.get(Rating_.ratingValue)));
+        }
+        query.multiselect(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue)));
+        query.groupBy(bookRoot.get(Book_.id)).orderBy(order);
+        return entityManager.createQuery(query).getResultList();
     }
 
     public boolean isBookExistByIsbn(String isbn) {
@@ -53,14 +74,28 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         return result.getSingleResult();
     }
 
-    public List<Book> findBooksBySearchRequest(String search)  {
+    public Tuple findBookByIsbnWithAvgRating(String isbn) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
+        Root<Book> bookRoot = query.from(Book.class);
+        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
+        query.select(builder.tuple(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue))))
+                .where(builder.equal(bookRoot.get(Book_.isbn), isbn));
+        Tuple result = entityManager.createQuery(query).getSingleResult();
+        return result;
+
+    }
+
+    public List<Tuple> findAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
         Root<Book> bookRoot = query.from(Book.class);
         Join<Book, Author> authorJoin = bookRoot.join(Book_.authors);
         Join<Book, Publisher> publisherJoin = bookRoot.join(Book_.publisher);
+        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
         List<Predicate> predicates = new ArrayList<>();
         Case<Object> objectCase = builder.selectCase();
+        Order order = builder.desc(bookRoot.get(Book_.isbn));
         String[] requestWords = search.replaceAll("[\\p{P}]", " ").split(" +");
         for (String requestWord : requestWords) {
             Predicate predicate = builder.or(builder.like(bookRoot.get(Book_.isbn), "%" + requestWord + "%"),
@@ -74,29 +109,35 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
                     .when(builder.like(publisherJoin.get(Publisher_.name), "%" + requestWord + "%"), 3);
         }
         Predicate finalPredicate = builder.or(predicates.toArray(new Predicate[0]));
-        Order order = builder.desc(objectCase);
-        query.select(bookRoot).where(finalPredicate).distinct(true).orderBy(order);
-        TypedQuery<Book> result = entityManager.createQuery(query);
-        return result.getResultList();
+        if (orderBy == null) {
+            order = builder.desc(objectCase);
+        } else if (orderBy.equals(OrderByQuerys.NAME.getName())) {
+            order = builder.asc(bookRoot.get(Book_.name));
+        } else if (orderBy.equals(OrderByQuerys.RATING.getName())) {
+            order = builder.desc(builder.avg(ratingJoin.get(Rating_.ratingValue)));
+        }
+        query.multiselect(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue)))
+                .where(finalPredicate).groupBy(bookRoot.get(Book_.isbn)).orderBy(order);
+
+        return entityManager.createQuery(query).getResultList();
     }
 
-    public List<Book> findBooksByCheckBoxGenreQueryNames(GenreDtoQueryNames queryGenreNames) {
+    public List<Tuple> findAllBooksByCheckBoxGenreQueryNames(GenreDtoQueryNames queryGenreNames) {
         List<String> names = queryGenreNames.getGenreDtoQueryNames();
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
         Root<Book> bookRoot = query.from(Book.class);
         Join<Book, Genre> genreJoin = bookRoot.join(Book_.genre);
+        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
         List<Predicate> predicates = new ArrayList<>();
+        Order order = builder.desc(builder.avg(ratingJoin.get(Rating_.ratingValue)));
         for (String name : names) {
             Predicate predicate = builder.equal(genreJoin.get(Genre_.name), name);
             predicates.add(predicate);
         }
         Predicate finalPredicate = builder.or(predicates.toArray(new Predicate[0]));
-        query.select(bookRoot).where(finalPredicate);
-        TypedQuery<Book> result = entityManager.createQuery(query);
-        return result.getResultList();
+        query.multiselect(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue))).where(finalPredicate)
+                .groupBy(bookRoot.get(Book_.isbn)).orderBy(order);
+        return entityManager.createQuery(query).getResultList();
     }
-
-
-
 }

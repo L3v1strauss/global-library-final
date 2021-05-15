@@ -19,17 +19,17 @@ public interface IBookService {
 
     BookDto getBookByIsbn(String isbn);
 
-    List<BookDto> getBooks();
+    List<BookDto> getAllBooksOrderByDateOfCreation();
 
-    List<BookDto> getBooks(String orderBy);
+    List<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy);
+
+    List<BookDto> getAllBooksWithAvgRating();
 
     void addBook(BookDto bookDto);
 
-    List<BookDto> getBooksBySearchRequest(String search);
+    List<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy);
 
-    List<BookDto> getBooksBySearchRequest(String search, String orderBy);
-
-    List<BookDto> getBooksByQueryNames(GenreDtoQueryNames queryGenreNames);
+    List<BookDto> getAllBooksByQueryNamesWithAvgRating(GenreDtoQueryNames queryGenreNames);
 
 
 

@@ -38,7 +38,7 @@ public class BookDto {
     private GenreDto genre;
     private PublisherDto publisher;
     private int quantity;
-    private double averageRating;
+    private Double averageRating;
 
     @NotEmpty
     private String genreName;
@@ -50,6 +50,10 @@ public class BookDto {
 
     public String parseAverageRating() {
         DecimalFormat myFormatter = new DecimalFormat("###.#");
-        return myFormatter.format(this.averageRating);
+        String number = "";
+        if (this.averageRating != null) {
+            return myFormatter.format(this.averageRating);
+        }
+        return number;
     }
 }
