@@ -1,4 +1,3 @@
-INSERT INTO genre (name) VALUES  ('FICTION'), ('SCIENCE'), ('MATH'), ('ECONOMY'), ('COMPUTER_SCIENCE');
 INSERT INTO user_detail (passport_number, address, educational_institution, ei_address)
 values ('KH7777777', 'Bogushevicha 16', 'IT Academy', 'M.Gorkogo 1');
 INSERT INTO user (first_name, last_name, email, password, enabled)

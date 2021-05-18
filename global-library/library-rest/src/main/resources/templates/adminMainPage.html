@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html"
+      lang="">
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
@@ -26,6 +27,12 @@
                         <ul class="list-group list-group-flush">
                             <a href="/admin/addbook" class="list-group-item list-group-item-action">Add book</a>
                             <a href="/admin/books" class="list-group-item list-group-item-action">All books</a>
+                        </ul>
+                        </br>
+                        <div th:class="font-weight-normal"><h6>Genres</h6></div>
+                        <ul class="list-group list-group-flush">
+                            <a href="/admin/addgenre" class="list-group-item list-group-item-action">Add genre</a>
+                            <a href="/admin/genres" class="list-group-item list-group-item-action">All genres</a>
                         </ul>
                         </br>
                         <div th:class="font-weight-normal"><h6>Requests</h6></div>

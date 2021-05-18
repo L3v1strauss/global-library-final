@@ -71,16 +71,8 @@ img {
 	margin-bottom:0;
 }
 
-.collor-button{
-	background-color: #edf5e1;
-}
-
-#collor-button{
-	background-color: #edf5e1;
-}
-
-#collor-button2{
-	background-color: #edf5e1;
+.btn-light, .btn-light:hover, .btn-light:active, .btn-light:visited {
+	background-color: #edf5e1 !important;
 }
 
 

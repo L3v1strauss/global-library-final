@@ -3,17 +3,14 @@ package com.global.library.service.services;
 
 import com.global.library.api.dao.IAuthorDao;
 import com.global.library.api.dao.IBookDao;
+import com.global.library.api.dao.IGenreDao;
 import com.global.library.api.dao.IPublisherDao;
 import com.global.library.api.dto.BookDto;
-import com.global.library.api.dto.GenreDtoQueryNames;
 import com.global.library.api.dto.RatingDto;
-import com.global.library.api.enums.GenreName;
-import com.global.library.api.enums.OrderByQuerys;
 import com.global.library.api.mappers.BookMapper;
 import com.global.library.api.services.IBookService;
 import com.global.library.entity.Author;
 import com.global.library.entity.Book;
-import com.global.library.entity.Genre;
 import com.global.library.entity.Publisher;
 import com.global.library.web.WebScraper;
 import com.global.library.web.constants.BookDetailsNames;
@@ -38,12 +35,14 @@ import java.util.stream.Collectors;
 public class BookService implements IBookService {
 
     private final IBookDao bookDao;
+    private final IGenreDao genreDao;
     private final IAuthorDao authorDao;
     private final IPublisherDao publisherDao;
     private final WebScraper webScraper;
 
-    public BookService(IBookDao bookDao, IAuthorDao authorDao, IPublisherDao publisherDao, WebScraper webScraper) {
+    public BookService(IBookDao bookDao, IGenreDao genreDao, IAuthorDao authorDao, IPublisherDao publisherDao, WebScraper webScraper) {
         this.bookDao = bookDao;
+        this.genreDao = genreDao;
         this.authorDao = authorDao;
         this.publisherDao = publisherDao;
         this.webScraper = webScraper;
@@ -52,8 +51,7 @@ public class BookService implements IBookService {
     @Override
     @Transactional
     public BookDto getBookById(long id) {
-        Book book = this.bookDao.get(id);
-        return BookMapper.mapBookDto(book);
+        return BookMapper.mapBookDto(this.bookDao.get(id));
     }
 
     @Override
@@ -75,8 +73,7 @@ public class BookService implements IBookService {
     @Override
     @Transactional
     public void deleteBook(long id) {
-        Book book = this.bookDao.get(id);
-        this.bookDao.delete(book);
+        this.bookDao.delete(this.bookDao.get(id));
     }
 
     @Override
@@ -87,26 +84,26 @@ public class BookService implements IBookService {
 
     @Override
     @Transactional
+    public List<BookDto> getAllBooksByGenre(String genre) {
+        return parseTupleToListBookDto(this.bookDao.findAllBooksByGenre(genre));
+    }
+
+    @Override
+    @Transactional
     public  List<BookDto> getAllBooksWithAvgRating() {
         return parseTupleToListBookDto( this.bookDao.findAllBooksWithAvgRating());
     }
 
     @Override
     @Transactional
-    public List<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy) {
-        return parseTupleToListBookDto(this.bookDao.findAllBooksOrderByRequestWithAvgRating(orderBy));
+    public List<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy, String genre) {
+        return parseTupleToListBookDto(this.bookDao.findAllBooksOrderByRequestWithAvgRating(orderBy, genre));
     }
 
     @Override
     @Transactional
-    public List<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy) {
-      return parseTupleToListBookDto(this.bookDao.findAllBooksBySearchAndOrderByRequestWithAvgRating(search, orderBy));
-    }
-
-    @Override
-    @Transactional
-    public List<BookDto> getAllBooksByQueryNamesWithAvgRating(GenreDtoQueryNames queryGenreNames) {
-        return parseTupleToListBookDto(this.bookDao.findAllBooksByCheckBoxGenreQueryNames(queryGenreNames));
+    public List<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy, String genre) {
+      return parseTupleToListBookDto(this.bookDao.findAllBooksBySearchAndOrderByRequestWithAvgRating(search, orderBy, genre));
     }
 
     @Override
@@ -119,15 +116,16 @@ public class BookService implements IBookService {
         } else {
             Map<String, String> bookDetails = webScraper.getBookDetailsFromWeb(bookDto.getIsbn());
             Book book = new Book();
+            book.setGenre(this.genreDao.getGenreByName(bookDto.getGenreName()));
             book.setIsbn(bookDto.getIsbn());
             book.setName(bookDetails.get(BookDetailsNames.NAME));
             book.setPicture(bookDetails.get(BookDetailsNames.PICTURE));
             book.setDescription(bookDetails.get(BookDetailsNames.DESCRIPTION));
             book.setQuantity(DEFAULT_QUANTITY);
+            book.setDateOfCreation(LocalDateTime.now());
             setAuthorToBook(book, bookDetails);
             setPublisherAndYearOfPublishingToBook(book, bookDetails);
-            addGenre(bookDto.getGenreName(), book);
-            book.setDateOfCreation(LocalDateTime.now());
+
             this.bookDao.create(book);
         }
     }
@@ -158,16 +156,6 @@ public class BookService implements IBookService {
                 author.setName(bookDetails.get(BookDetailsNames.AUTHOR + i));
                 book.getAuthors().add(author);
             }
-        }
-    }
-
-    private void addGenre(String genreName, Book book) {
-        for (GenreName value : GenreName.values()) {
-            if (value.name().equals(genreName))
-                book.setGenre(Genre.builder()
-                        .id(value.getId())
-                        .name(value.name())
-                        .build());
         }
     }
 

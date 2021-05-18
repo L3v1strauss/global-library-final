@@ -6,13 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class GenreDto {
+public class SearchAndOrderDto {
 
-    private long id;
-    private String name;
+    private String searchRequest;
+    private String orderByRequest;
+
 }

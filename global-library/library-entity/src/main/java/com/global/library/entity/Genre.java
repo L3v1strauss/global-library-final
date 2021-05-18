@@ -27,11 +27,4 @@ public class Genre extends AEntity<Long>{
             fetch = FetchType.LAZY)
     private List<Book> books;
 
-    public void addBookToGenre(Book book) {
-        if (books == null) {
-            books = new ArrayList<>();
-        }
-        books.add(book);
-        book.setGenre(this);
-    }
 }

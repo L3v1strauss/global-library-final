@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html"
+      lang="">
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
@@ -18,33 +19,22 @@
         <div class="d-flex" id="side-wrapper">
             <div th:insert="adminMainPage :: #left-side-menu"></div>
             <form class="form-input" th:method="POST"
-                  th:action="@{/admin/addbook}"
-                  th:object="${book}">
+                  th:action="@{/admin/addgenre}"
+                  th:object="${genre}">
                 <fieldset>
-                    <div class="font-weight-normal">
-                        <div class="custom-slct" style="width:200px;">
-                            <div style="color: red" class="alert" th:text="${chooseGenreError}"></div>
-                            <select th:field="*{genreName}" >
-                                <option th:value="null">Choose genre</option>
-                                <option th:each="genre : ${genres}"
-                                        th:value="${genre.name}"
-                                        th:text="${genre.name}"></option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="group">
-                        <input type="text" th:field="*{isbn}" id="isbn" required="true"
+                        <div style="color:red" th:text="${genreExistError}"></div>
+                        <input type="text" th:field="*{name}" id="isbn" required="true"
                                autofocus="true"/>
                         <span class="highlight"></span>
                         <span class="bar"></span>
-                        <label class="label">Enter isbn</label>
+                        <label class="label">Enter genre name</label>
                     </div>
-                    <div style="color:red" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
-                    <button type="button" class="btn btn-light" data-toggle="modal"
-                            th:attr="data-target='#addBookModal'">
-                        ADD
-                    </button>
-                    <div class="modal fade" th:id="'addBookModal'" tabindex="-1"
+                        <button type="button" class="btn btn-light" data-toggle="modal"
+                                th:attr="data-target='#addGenreModal'">
+                            ADD
+                        </button>
+                    <div class="modal fade" th:id="'addGenreModal'" tabindex="-1"
                          role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
@@ -55,7 +45,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body font-weight-normal" style="font-size: 18px;">
-                                    Do you realy want add this book?
+                                    Do you realy want add this genre?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit"  class="btn btn-light">ADD</button>
@@ -67,6 +57,8 @@
                         </div>
                     </div>
                 </fieldset>
+            </form>
+            </fieldset>
             </form>
         </div>
         <div th:insert="mainTemplate :: #footer-selector"></div>

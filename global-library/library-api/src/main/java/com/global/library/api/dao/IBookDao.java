@@ -1,13 +1,10 @@
 package com.global.library.api.dao;
 
 
-import com.global.library.api.dto.GenreDtoQueryNames;
 import com.global.library.entity.Book;
 
 import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Map;
 
 public interface IBookDao extends IAGenericDao<Book> {
 
@@ -15,15 +12,15 @@ public interface IBookDao extends IAGenericDao<Book> {
 
     Tuple findBookByIsbnWithAvgRating(String isbn);
 
+    List<Tuple> findAllBooksByGenre(String genre);
+
     List<Tuple> findAllBooksWithAvgRating();
 
     List<Book> findAllBooksOrderByDateOfCreation();
 
-    List<Tuple> findAllBooksOrderByRequestWithAvgRating(String orderBy);
+    List<Tuple> findAllBooksOrderByRequestWithAvgRating(String orderBy, String genre);
 
-    List<Tuple> findAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy);
-
-    List<Tuple> findAllBooksByCheckBoxGenreQueryNames(GenreDtoQueryNames queryGenreNames);
+    List<Tuple> findAllBooksBySearchAndOrderByRequestWithAvgRating(String genre, String search, String orderBy);
 
     boolean isBookExistByIsbn(String isbn);
 

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.ISBN;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,7 +40,6 @@ public class BookDto {
     private PublisherDto publisher;
     private int quantity;
     private Double averageRating;
-
     @NotEmpty
     private String genreName;
 
