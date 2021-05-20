@@ -56,7 +56,7 @@
                         <span class="input-group-btn">
                 <button id="collor-button" class="btn btn-light collor-button" type="submit"><i
                         class="fa fa-search"></i></button>
-                        </span>
+              </span>
                     </form>
                 </div>
                 <p th:if="${request != null}">Showing results for "[[${request}]]"</p>
@@ -93,10 +93,10 @@
                                 <td th:text="${request.user.userDetailDto.passportNumber}"></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-light" data-toggle="modal"
-                                            th:attr="data-target='#extradition' + ${request.id}">
-                                        Extradite
+                                            th:attr="data-target='#return' + ${request.id}">
+                                        Return
                                     </button>
-                                    <div class="modal fade" th:id="'extradition' + ${request.id}" tabindex="-1"
+                                    <div class="modal fade" th:id="'return' + ${request.id}" tabindex="-1"
                                          role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
@@ -107,12 +107,12 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body font-weight-normal" style="font-size: 18px;">
-                                                    Do you realy want extradite this book?
+                                                    Is book returned?
                                                 </div>
                                                 <div class="modal-footer">
                                                     <div>
                                                         <form th:method="PATCH"
-                                                              th:action="@{/admin/request/processed/{id}(id=${request.id})}">
+                                                              th:action="@{/admin/request/returned/{id}(id=${request.id})}">
                                                             <input type="submit" value="Submit" class="btn btn-light"/>
                                                             <button type="button" class="btn btn-outline-dark"
                                                                     data-dismiss="modal">Close

@@ -12,9 +12,13 @@ import com.global.library.api.services.IBookService;
 import com.global.library.entity.Author;
 import com.global.library.entity.Book;
 import com.global.library.entity.Publisher;
+import com.global.library.service.utils.PaginationUtil;
 import com.global.library.web.WebScraper;
 import com.global.library.web.constants.BookDetailsNames;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,32 +82,36 @@ public class BookService implements IBookService {
 
     @Override
     @Transactional
-    public List<BookDto> getAllBooksOrderByDateOfCreation() {
-        return BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByDateOfCreation());
+    public Page<BookDto> getAllBooksOrderByDateOfCreation(int pageNumber, int pageSize) {
+        List<BookDto> allBooks = BookMapper.mapAllBooksDto(this.bookDao.findAllBooksOrderByDateOfCreation());
+        return PaginationUtil.getPageBookDto(allBooks, PageRequest.of(pageNumber - 1, pageSize));
     }
 
     @Override
     @Transactional
-    public List<BookDto> getAllBooksByGenre(String genre) {
-        return parseTupleToListBookDto(this.bookDao.findAllBooksByGenre(genre));
+    public  Page<BookDto> getAllBooksWithAvgRating(int pageNumber, int pageSize) {
+        List<BookDto> allBooks = parseTupleToListBookDto( this.bookDao.findAllBooksWithAvgRating());
+        return PaginationUtil.getPageBookDto(allBooks, PageRequest.of(pageNumber - 1, pageSize));
     }
 
     @Override
     @Transactional
-    public  List<BookDto> getAllBooksWithAvgRating() {
-        return parseTupleToListBookDto( this.bookDao.findAllBooksWithAvgRating());
+    public Page<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy, String genre, int pageNumber, int pageSize) {
+        List<BookDto> allBooks = parseTupleToListBookDto(this.bookDao.findAllBooksOrderByRequestWithAvgRating(orderBy, genre));
+        return PaginationUtil.getPageBookDto(allBooks, PageRequest.of(pageNumber - 1, pageSize));
     }
 
     @Override
     @Transactional
-    public List<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy, String genre) {
-        return parseTupleToListBookDto(this.bookDao.findAllBooksOrderByRequestWithAvgRating(orderBy, genre));
+    public Page<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy, String genre,
+                                                                           int pageNumber, int pageSize) {
+      List<BookDto> allBooks = parseTupleToListBookDto(this.bookDao.findAllBooksBySearchAndOrderByRequestWithAvgRating(search, orderBy, genre));
+        return PaginationUtil.getPageBookDto(allBooks, PageRequest.of(pageNumber - 1, pageSize));
     }
 
     @Override
-    @Transactional
-    public List<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String search, String orderBy, String genre) {
-      return parseTupleToListBookDto(this.bookDao.findAllBooksBySearchAndOrderByRequestWithAvgRating(search, orderBy, genre));
+    public List<Integer> getTotalPages(Page<BookDto> page) {
+        return PaginationUtil.getListOfPageNumbers(page);
     }
 
     @Override
@@ -169,4 +177,5 @@ public class BookService implements IBookService {
         }
         return booksDto;
     }
+
 }

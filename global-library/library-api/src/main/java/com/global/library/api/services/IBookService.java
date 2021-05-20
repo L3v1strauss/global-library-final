@@ -1,6 +1,7 @@
 package com.global.library.api.services;
 
 import com.global.library.api.dto.BookDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,17 +15,19 @@ public interface IBookService {
 
     BookDto getBookByIsbn(String isbn);
 
-    List<BookDto> getAllBooksByGenre(String genre);
+    Page<BookDto> getAllBooksOrderByDateOfCreation(int pageNumber, int pageSize);
 
-    List<BookDto> getAllBooksOrderByDateOfCreation();
+    Page<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy, String genre, int pageNumber, int pageSize);
 
-    List<BookDto> getAllBooksOrderByRequestWithAvgRating(String orderBy, String genre);
-
-    List<BookDto> getAllBooksWithAvgRating();
+    Page<BookDto> getAllBooksWithAvgRating(int pageNumber, int pageSize);
 
     void addBook(BookDto bookDto);
 
-    List<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String genre, String search, String orderBy);
+    List<Integer> getTotalPages(Page<BookDto> page);
+
+    Page<BookDto> getAllBooksBySearchAndOrderByRequestWithAvgRating(String genre, String search, String orderBy, int pageNumber, int pageSize);
+
+
 
 
 

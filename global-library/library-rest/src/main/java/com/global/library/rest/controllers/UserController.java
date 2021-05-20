@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("/new")
-    public String createAccount(@ModelAttribute("user") @Valid UserDto user,
+    public String createUserAccount(@ModelAttribute("user") @Valid UserDto user,
                                 BindingResult bindingResult,
                                 Model model) {
         if (bindingResult.hasErrors()) {
@@ -113,6 +113,23 @@ public class UserController {
         }
         model.addAttribute("confirmPasswordError", "Current password is incorrect");
         return "userChangePassword";
+    }
+
+    private String createAccount(UserDto user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "mainCreateNewAccount";
+        }
+        if (!user.getPassword().equals(user.getPasswordConfirm())) {
+            model.addAttribute("passwordError", "Passwords don't match");
+            return "mainCreateNewAccount";
+        }
+        if (this.userService.isUserExist(user.getEmail())) {
+            model.addAttribute("emailError", "Email already exists");
+            return "mainCreateNewAccount";
+        }
+        userService.createUser(user);
+
+       return  "redirect:/";
     }
 
 }

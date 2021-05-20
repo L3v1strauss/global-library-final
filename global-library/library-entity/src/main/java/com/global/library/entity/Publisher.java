@@ -19,7 +19,7 @@ public class Publisher extends AEntity<Long>{
 
     private String name;
 
-    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},orphanRemoval = true,
+    @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "publisher",
             fetch = FetchType.LAZY)
     private List<Book> books;

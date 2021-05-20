@@ -4,7 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 public class Extradition extends AEntity<Long> {
 
     @Column(name = "date")
-    private Timestamp timestamp;
+    private LocalDateTime dateOfCreation;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -26,4 +26,7 @@ public class Extradition extends AEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @Column(name = "status")
+    private String status;
 }

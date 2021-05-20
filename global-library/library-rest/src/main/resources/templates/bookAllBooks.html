@@ -30,37 +30,38 @@
                                             <ul  class="list-group list-group-flush">
                                                 <th:block th:each="genre : ${genres}">
                                                     <li  class="list-group-item">
-                                                        <a class="text-dark" th:href="@{/books(genre = ${genre.name})}" th:text="${genre.name}"></a>
+                                                        <a class="text-dark" th:href="@{/books/s(genre = ${genre.name}, search = ${searchRequest}, orderBy = ${orderByRequest})}" th:text="${genre.name}"></a>
                                                     </li>
                                                 </th:block>
                                             </ul>
+                                        </ul>
                                     </div>
                                     <div class="col-md-9">
                                         <h5><i class="fa fa-file-o"></i> Books</h5>
                                         <hr>
-                                        <form id="form-filter" th:method="POST"
-                                              th:action="@{/books(genre = ${genreRequest})}" th:object="${searchAndOrder}">
+                                        <form id="form-filter" th:method="GET"
+                                              th:action="@{/books/s(genre = ${genreRequest}, search = ${searchRequest}, orderBy = ${orderByRequest})}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control shadow-success"
-                                                  th:field="*{searchRequest}" id="search" name="search">
+                                                  th:value="${searchRequest}" id="search" name="search">
                                                 <span class="input-group-btn">
                                             <button id="collor-button" class="btn btn-light shadow-success"
                                                     type="submit"><i
                                                     class="fa fa-search"></i></button></span>
                                             </div>
-                                            <p th:if="${searchAndOrder.searchRequest != null &&
-                                            !searchAndOrder.searchRequest.isEmpty()}">Showing results for "[[${searchAndOrder.searchRequest}]]"</p>
+                                            <p th:if="${searchRequest != null &&
+                                            !searchRequest.isEmpty()}">Showing results for "[[${searchRequest}]]"</p>
                                             <div class="padding"></div>
                                             <div class="row">
                                                 <div class="col-sm-3">
                                                     <div class="form-group">
                                                         <label th:for="select-box"
                                                                class="label select-box1">
-                                                            <span th:if="${searchAndOrder.orderByRequest == null}" th:text="'Order by'" class="label-desc"></span>
-                                                            <span th:if="${searchAndOrder.orderByRequest == 'name'}" th:text="'By name'" class="label-desc"></span>
-                                                            <span th:if="${searchAndOrder.orderByRequest == 'rating'}" th:text="'By rating'" class="label-desc"></span></label>
+                                                            <span th:if="${orderByRequest == null || orderByRequest.isEmpty() }" th:text="'Order by'" class="label-desc"></span>
+                                                            <span th:if="${orderByRequest == 'name'}" th:text="'By name'" class="label-desc"></span>
+                                                            <span th:if="${orderByRequest == 'rating'}" th:text="'By rating'" class="label-desc"></span></label>
                                                         <select th:id="select-box" class="select"
-                                                                th:value="*{orderByRequest}" name="orderByRequest"
+                                                                th:value="${orderByRequest}" name="orderBy"
                                                                 onchange="this.form.submit()">
                                                             <option style="display: none"></option>
                                                             <option th:value="'name'">Name</option>

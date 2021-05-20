@@ -68,6 +68,15 @@
                     <label class="label">Last name*</label>
                 </div>
                 <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                <input type="text" th:field="*{userDetailDto.telephoneNumber}" id="telephoneNumber" required="true"
+                       autofocus="true"/>
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label class="label">Telephone number*</label>
+    </div>
+    <div style="color:red" th:text="${telephoneError}"></div>
+    <div style="color:red" th:if="${#fields.hasErrors('userDetailDto.telephoneNumber')}"
+         th:errors="*{userDetailDto.telephoneNumber}"></div>
                 <div class="group">
                     <input type="text" th:field="*{userDetailDto.passportNumber}" id="passportNumber" required="true" autofocus="true"/>
                     <span class="highlight"></span>

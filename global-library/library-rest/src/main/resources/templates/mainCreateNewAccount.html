@@ -16,13 +16,14 @@
         <div th:insert="mainTemplate :: #header-selector"></div>
         <form id="Create" class="form-input" th:method="POST" th:action="@{/new}" th:object="${user}">
             <fieldset>
-              <p><a class="text-muted"  href="/new/privilege" th:text="'Are you student or teacher? Create privilege account'"></a></p>
+                <p><a class="text-muted" href="/new/privilege"
+                      th:text="'Are you student or teacher? Create privilege account'"></a></p>
                 <h5 class="font-weight-normal">Please fill out the form</h5>
-                        <select id="earringstd" th:field="*{roleName}" th:name="roleName">
-                            <option th:value="'ROLE_USER'" type="hidden">
-                                <div th:text="USER"></div>
-                            </option>
-                        </select>
+                <select id="earringstd" th:field="*{roleName}" th:name="roleName">
+                    <option th:value="'ROLE_USER'" type="hidden">
+                        <div th:text="USER"></div>
+                    </option>
+                </select>
                 <div class="group">
                     <div style="color:red" th:text="${emailError}"></div>
                     <input type="text" th:field="*{email}" id="email" required="true" autofocus="true"/>
@@ -40,7 +41,8 @@
                 </div>
                 <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 <div class="group">
-                    <input type="password" th:field="*{passwordConfirm}" id="passwordConfirm" required="true" autofocus="true"/>
+                    <input type="password" th:field="*{passwordConfirm}" id="passwordConfirm" required="true"
+                           autofocus="true"/>
                     <span class="highlight"></span>
                     <span class="bar"></span>
                     <label class="label">Confirm password*</label>
@@ -61,12 +63,24 @@
                 </div>
                 <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
                 <div class="group">
-                    <input type="text" th:field="*{userDetailDto.passportNumber}" id="passportNumber" required="true" autofocus="true"/>
+                    <input type="text" th:field="*{userDetailDto.telephoneNumber}" id="telephoneNumber" required="true"
+                           autofocus="true"/>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="label">Telephone number*</label>
+                </div>
+                <div style="color:red" th:text="${telephoneError}"></div>
+                <div style="color:red" th:if="${#fields.hasErrors('userDetailDto.telephoneNumber')}"
+                     th:errors="*{userDetailDto.telephoneNumber}"></div>
+                <div class="group">
+                    <input type="text" th:field="*{userDetailDto.passportNumber}" id="passportNumber" required="true"
+                           autofocus="true"/>
                     <span class="highlight"></span>
                     <span class="bar"></span>
                     <label class="label">Passport number*</label>
                 </div>
-                <div style="color:red" th:if="${#fields.hasErrors('userDetailDto.passportNumber')}" th:errors="*{userDetailDto.passportNumber}"></div>
+                <div style="color:red" th:if="${#fields.hasErrors('userDetailDto.passportNumber')}"
+                     th:errors="*{userDetailDto.passportNumber}"></div>
                 <div class="btn-box">
                     <button class="btn btn-light" type="submit">Create</button>
                 </div>

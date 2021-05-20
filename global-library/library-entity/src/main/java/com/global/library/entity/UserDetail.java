@@ -18,6 +18,9 @@ public class UserDetail extends AEntity<Long> {
     @Column(name = "passport_number")
     private String passportNumber;
 
+    @Column(name = "telephone_number")
+    private String telephoneNumber;
+
     @Column(name = "address")
     private String address;
 

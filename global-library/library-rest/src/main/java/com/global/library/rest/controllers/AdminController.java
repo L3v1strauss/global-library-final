@@ -19,11 +19,6 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public String admin() {
-        return "adminMainPage";
-    }
-
     @GetMapping("/users/{id}")
     public String findUser(@PathVariable("id") long id, Model model) {
         model.addAttribute("user", this.userService.getUserById(id));

@@ -3,7 +3,7 @@ package com.global.library.rest.controllers;
 import com.global.library.api.dto.BookDto;
 import com.global.library.api.services.IBookService;
 import com.global.library.api.services.IGenreService;
-import com.global.library.rest.utils.PaginationUtil;
+import com.global.library.service.utils.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,12 +62,9 @@ public class AdminBookController {
     public String getBooks(Model model,
                            @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                            @RequestParam(value = "size", defaultValue = "5") int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        List<BookDto> allBooks = this.bookService.getAllBooksOrderByDateOfCreation();
-        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
-        List<BookDto> booksPerPage = page.getContent();
+        Page<BookDto> page = this.bookService.getAllBooksOrderByDateOfCreation(pageNumber, pageSize);
         model.addAttribute("bookPage", page);
-        model.addAttribute("books", booksPerPage);
+        model.addAttribute("books", page.getContent());
         model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
         return "adminAllBooks";
     }
@@ -79,13 +76,10 @@ public class AdminBookController {
                                    @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                                    @RequestParam(value = "size", defaultValue = "5") int pageSize,
                                    Model model) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        List<BookDto> allBooks = this.bookService.getAllBooksBySearchAndOrderByRequestWithAvgRating(request, orderBy, genre);
-        Page<BookDto> page = PaginationUtil.getPageBookDto(allBooks, pageable);
-        List<BookDto> booksPerPage = page.getContent();
+        Page<BookDto> page = this.bookService.getAllBooksBySearchAndOrderByRequestWithAvgRating(request, orderBy, genre, pageNumber, pageSize);
         model.addAttribute("request", request);
         model.addAttribute("bookPage", page);
-        model.addAttribute("books", booksPerPage);
+        model.addAttribute("books", page.getContent());
         model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));
         return "adminAllbooks";
     }

@@ -12,8 +12,6 @@ public interface IBookDao extends IAGenericDao<Book> {
 
     Tuple findBookByIsbnWithAvgRating(String isbn);
 
-    List<Tuple> findAllBooksByGenre(String genre);
-
     List<Tuple> findAllBooksWithAvgRating();
 
     List<Book> findAllBooksOrderByDateOfCreation();

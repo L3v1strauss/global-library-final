@@ -9,4 +9,8 @@
 	<include file="2021-03-14-03-insert-roles.xml" relativeToChangelogFile="true"/>
 	<include file="2021-03-21-01-create-table-books.xml" relativeToChangelogFile="true"/>
 	<include file="2021-03-21-02-insert-admin-user.xml" relativeToChangelogFile="true"/>
+	<include file="2021-05-19-01-alter-request-extradition.xml" relativeToChangelogFile="true"/>
+	<include file="2021-05-20-01-drop-changes-table.xml" relativeToChangelogFile="true"/>
+	<include file="2021-05-20-02-add-telephone.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
+

@@ -17,14 +17,25 @@ import java.time.LocalDateTime;
 @Table(name = "request")
 public class Request extends AEntity<Long> {
 
-    @Column(name = "date")
+    @Column(name = "date_creation")
     private LocalDateTime dateOfCreation;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @Column(name = "date_extradition")
+    private LocalDateTime dateOfExtradition;
+
+    @Column(name = "date_return")
+    private LocalDateTime dateOfReturn;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.REFRESH, CascadeType.DETACH},
+    fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST,CascadeType.REFRESH, CascadeType.DETACH},
+    fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @Column(name = "status")
+    private String status;
 }

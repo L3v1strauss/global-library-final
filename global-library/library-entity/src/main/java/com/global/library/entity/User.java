@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class User extends AEntity<Long> {
     private LocalDateTime dateOfCreation;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -62,12 +63,6 @@ public class User extends AEntity<Long> {
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "user",
             fetch = FetchType.LAZY)
-    private List<Extradition> extraditions;
-
-    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
-            orphanRemoval = true,
-            mappedBy = "user",
-            fetch = FetchType.LAZY)
     private List<Rating> ratings;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -79,5 +74,12 @@ public class User extends AEntity<Long> {
             roles = new HashSet<>();
         }
         return roles;
+    }
+
+    public List<Request> getRequests(){
+        if(requests == null) {
+            requests = new ArrayList<>();
+        }
+        return requests;
     }
 }

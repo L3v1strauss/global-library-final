@@ -1,4 +1,4 @@
-package com.global.library.rest.utils;
+package com.global.library.service.utils;
 
 import com.global.library.api.dto.BookDto;
 import lombok.experimental.UtilityClass;

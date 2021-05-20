@@ -18,6 +18,8 @@ public class UserDetailDto {
     private long id;
     @NotEmpty
     private String passportNumber;
+    @NotEmpty
+    private String telephoneNumber;
     private String address;
     private String educationalInstitution;
     private String educationalInstitutionAddress;

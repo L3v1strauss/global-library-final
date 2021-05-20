@@ -26,19 +26,6 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         return result.getResultList();
     }
 
-    public List<Tuple> findAllBooksByGenre(String genre) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> query = builder.createTupleQuery();
-        Root<Book> bookRoot = query.from(Book.class);
-        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
-        Join<Book, Genre> genreJoin = bookRoot.join(Book_.genre);
-        query.multiselect(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue)))
-                .where(builder.equal(genreJoin.get(Genre_.name), genre))
-                .groupBy(bookRoot.get(Book_.isbn))
-                .orderBy(builder.desc(bookRoot.get(Book_.dateOfCreation)));
-        return entityManager.createQuery(query).getResultList();
-    }
-
     public List<Tuple> findAllBooksWithAvgRating() {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = builder.createTupleQuery();
@@ -65,7 +52,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
             order = builder.desc(builder.avg(ratingJoin.get(Rating_.ratingValue)));
         }
         query.multiselect(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue)));
-        if (!genre.isEmpty()) {
+        if (genre != null) {
             query.where(builder.equal(genreJoin.get(Genre_.name), genre));
         }
         query.groupBy(bookRoot.get(Book_.id)).orderBy(order);
@@ -97,8 +84,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
         query.select(builder.tuple(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue))))
                 .where(builder.equal(bookRoot.get(Book_.isbn), isbn));
-        Tuple result = entityManager.createQuery(query).getSingleResult();
-        return result;
+        return entityManager.createQuery(query).getSingleResult();
 
     }
 
@@ -135,7 +121,7 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
             order = builder.desc(builder.avg(ratingJoin.get(Rating_.ratingValue)));
         }
         query.multiselect(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue)));
-        if (genre.isEmpty()) {
+        if (genre == null) {
             query.where(searchPredicate);
         } else {
             query.where(searchPredicate, genrePredicate);

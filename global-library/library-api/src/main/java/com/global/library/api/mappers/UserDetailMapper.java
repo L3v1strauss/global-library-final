@@ -17,6 +17,7 @@ public class UserDetailMapper {
                 .id(source.getId())
                 .address(source.getAddress())
                 .passportNumber(source.getPassportNumber())
+                .telephoneNumber(source.getTelephoneNumber())
                 .educationalInstitution(source.getEducationalInstitution())
                 .educationalInstitutionAddress(source.getEducationalInstitutionAddress())
                 .build();
@@ -28,6 +29,7 @@ public class UserDetailMapper {
                 .id(source.getId())
                 .address(source.getAddress())
                 .passportNumber(source.getPassportNumber())
+                .telephoneNumber(source.getTelephoneNumber())
                 .educationalInstitution(source.getEducationalInstitution())
                 .educationalInstitutionAddress(source.getEducationalInstitutionAddress())
                 .build();
