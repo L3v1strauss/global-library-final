@@ -1,10 +1,6 @@
 package com.global.library.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -24,6 +20,7 @@ import java.util.Set;
 @SuperBuilder
 @Entity
 @Table(name = "user")
+@EqualsAndHashCode
 public class User extends AEntity<Long> {
 
     @Column(name = "first_name")

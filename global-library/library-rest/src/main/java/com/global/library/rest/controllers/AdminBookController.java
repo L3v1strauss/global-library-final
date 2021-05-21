@@ -1,6 +1,7 @@
 package com.global.library.rest.controllers;
 
 import com.global.library.api.dto.BookDto;
+import com.global.library.api.enums.RequestStatusName;
 import com.global.library.api.services.IBookService;
 import com.global.library.api.services.IGenreService;
 import com.global.library.service.utils.PaginationUtil;
@@ -31,6 +32,7 @@ public class AdminBookController {
 
     @GetMapping("/addbook")
     public String addBook(@ModelAttribute("book") BookDto book, Model model) {
+        model.addAttribute("statuses", RequestStatusName.values());
         model.addAttribute("genres", this.genreService.getAllGenresOrderByName());
         return "adminAddBook";
     }
@@ -63,6 +65,7 @@ public class AdminBookController {
                            @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                            @RequestParam(value = "size", defaultValue = "5") int pageSize) {
         Page<BookDto> page = this.bookService.getAllBooksOrderByDateOfCreation(pageNumber, pageSize);
+        model.addAttribute("statuses", RequestStatusName.values());
         model.addAttribute("bookPage", page);
         model.addAttribute("books", page.getContent());
         model.addAttribute("pageNumbers", PaginationUtil.getListOfPageNumbers(page));

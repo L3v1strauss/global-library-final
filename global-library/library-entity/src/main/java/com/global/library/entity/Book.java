@@ -64,8 +64,10 @@ public class Book extends AEntity<Long> {
             fetch = FetchType.LAZY)
     private List<Rating> ratings;
 
-    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
-    private Request request;
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "book",
+    fetch = FetchType.LAZY)
+    private List<Request> request;
 
     public Set<Author> getAuthors() {
         if (authors == null){

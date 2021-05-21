@@ -12,8 +12,8 @@ public interface IRequestDao extends IAGenericDao<Request> {
 
     List<Request> findAllConfirmedRequestsFromUserByEmail(String email);
 
-    List<Request> findAllConfirmedRequests();
+    List<Request> findAllRequests(String status);
 
-    List<Request> findAllProcessedRequests();
+    List<Request> findAllRequestsBySearch(String status, String search);
 
 }

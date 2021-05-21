@@ -39,10 +39,9 @@
                         </br>
                         <div th:class="font-weight-normal"><h6>Requests</h6></div>
                         <ul class="list-group list-group-flush">
-                            <a href="/admin" class="list-group-item list-group-item-action">New confirmed requests</a>
-                            <a href="/admin/requests/processed" class="list-group-item list-group-item-action">Processed
-                                requests</a>
-                            <a href="/admin/requests/debtors" class="list-group-item list-group-item-action">Debtors</a>
+                            <th:block th:each="status : ${statuses}">
+                            <a th:href="@{/admin/requests(status = ${status.getNameDB()})}" th:text="${status.getNameDB() + ' requests'}" class="list-group-item list-group-item-action"></a>
+                            </th:block>
                         </ul>
                         </br>
                     </div>
@@ -50,17 +49,21 @@
             </div>
             <section th:class="font-weight-normal">
                 <div class="input-group">
-                    <form th:method="GET" th:action="@{/admin/request/search(request = ${request})}">
-                        <input type="text" class="form-control shadow-success" th:value="${request}" id="request"
-                               name="request">
+                    <form th:method="GET" th:action="@{/admin/requests/s(status = ${currentStatus}, search = ${searchRequest})}">
+                        <input type="text" class="form-control shadow-success" th:value="${searchRequest}" id="search"
+                               name="search">
                         <span class="input-group-btn">
                 <button id="collor-button" class="btn btn-light collor-button" type="submit"><i
                         class="fa fa-search"></i></button>
                         </span>
                     </form>
                 </div>
-                <p th:if="${request != null}">Showing results for "[[${request}]]"</p>
-                <h2>New confirmed requests</h2>
+                <p th:if="${search != null}">Showing results for "[[${search}]]"</p>
+                <h2 th:if="${currentStatus == 'confirmed'}" th:text="'New confirmed requests'"></h2>
+                <h2 th:if="${currentStatus == 'cancelled'}" th:text="'Cancelled requests'"></h2>
+                <h2 th:if="${currentStatus == 'created'}" th:text="'Created status'"></h2>
+                <h2 th:if="${currentStatus == 'processed'}" th:text="'Processed status'"></h2>
+                <h2 th:if="${currentStatus == 'returned'}" th:text="'Returned status'"></h2>
                 <div class="tbl-header">
                     <table cellpadding="0" cellspacing="0" border="0">
                         <thead>
@@ -71,7 +74,7 @@
                             <th>Client last name</th>
                             <th>Telephone</th>
                             <th>Passport number</th>
-                            <th>Extradition</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                     </table>
@@ -92,6 +95,7 @@
                                 <td th:text="${request.user.userDetailDto.telephoneNumber}"></td>
                                 <td th:text="${request.user.userDetailDto.passportNumber}"></td>
                                 <td>
+                                    <div th:if="${currentStatus == 'confirmed'}">
                                     <button type="button" class="btn btn-sm btn-light" data-toggle="modal"
                                             th:attr="data-target='#extradition' + ${request.id}">
                                         Extradite
@@ -123,6 +127,43 @@
                                             </div>
                                         </div>
                                     </div>
+                                    </div>
+                                    <div th:if="${currentStatus == 'processed'}">
+                                        <button type="button" class="btn btn-sm btn-light" data-toggle="modal"
+                                                th:attr="data-target='#return' + ${request.id}">
+                                            Return
+                                        </button>
+                                        <div class="modal fade" th:id="'return' + ${request.id}" tabindex="-1"
+                                             role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body font-weight-normal" style="font-size: 18px;">
+                                                        Is book returned?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div>
+                                                            <form th:method="PATCH"
+                                                                  th:action="@{/admin/request/returned/{id}(id=${request.id})}">
+                                                                <input type="submit" value="Submit" class="btn btn-light"/>
+                                                                <button type="button" class="btn btn-outline-dark"
+                                                                        data-dismiss="modal">Close
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:if="${currentStatus == 'cancelled'}" th:text="'Cancelled'"></div>
+                                    <div th:if="${currentStatus == 'created'}" th:text="'Created'"></div>
+                                    <div th:if="${currentStatus == 'returned'}" th:text="'Returned'"></div>
                                 </td>
                             </tr>
                         </th:block>

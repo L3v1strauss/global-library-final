@@ -39,6 +39,7 @@ public class AGenericDao<T extends AEntity<Long>> implements IAGenericDao<T> {
     }
 
     public void update(T entity) {
+        entityManager.detach(entity);
         entityManager.merge(entity);
         entityManager.flush();
     }

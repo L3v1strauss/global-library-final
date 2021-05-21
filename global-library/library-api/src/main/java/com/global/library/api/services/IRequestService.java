@@ -16,9 +16,9 @@ public interface IRequestService {
 
     List<RequestDto> getAllConfirmedRequestsFromUserByEmail(String email);
 
-    List<RequestDto> getAllConfirmedRequests();
+    List<RequestDto> getAllRequests(String status);
 
-    List<RequestDto> getAllProcessedRequests();
+    List<RequestDto> getAllRequestsBySearch(String status, String search);
 
     void deleteRequest(long id);
 

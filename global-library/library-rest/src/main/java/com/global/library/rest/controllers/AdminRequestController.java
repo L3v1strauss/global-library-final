@@ -1,12 +1,12 @@
 package com.global.library.rest.controllers;
 
-import com.global.library.api.dto.BookDto;
 import com.global.library.api.enums.RequestStatusName;
 import com.global.library.api.services.IRequestService;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/admin")
@@ -18,16 +18,12 @@ public class AdminRequestController {
         this.requestService = requestService;
     }
 
-    @GetMapping()
-    public String getAdminPage(Model model) {
-        model.addAttribute("requests", this.requestService.getAllConfirmedRequests());
+    @GetMapping("/requests")
+    public String getAdminPage(@RequestParam(value = "status", required = false) String status,Model model) {
+        model.addAttribute("statuses", RequestStatusName.values());
+        model.addAttribute("currentStatus", status);
+        model.addAttribute("requests", this.requestService.getAllRequests(status));
         return "adminMainPage";
-    }
-
-    @GetMapping("/requests/processed")
-    public String getRequestsPage(Model model) {
-        model.addAttribute("requests", this.requestService.getAllProcessedRequests());
-        return "adminRequestProcessed";
     }
 
     @GetMapping("/request/processed/{id}")
@@ -38,7 +34,7 @@ public class AdminRequestController {
     @PatchMapping("/request/processed/{id}")
     public String processRequest(@PathVariable("id") long id) {
         this.requestService.processRequest(id);
-        return "redirect:/admin";
+        return "redirect:/admin/requests?status=confirmed";
     }
 
     @GetMapping("/requests/returned/{id}")
@@ -49,30 +45,24 @@ public class AdminRequestController {
     @PatchMapping("/request/returned/{id}")
     public String returnedRequest(@PathVariable("id") long id) {
         this.requestService.returnRequest(id);
-        return "redirect:/admin/requests/processed";
+        return "redirect:/admin/requests?status=processed";
+
     }
 
 
     @GetMapping("/requests/s")
-    public String getBooksWithSearchOrOrderBy(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
-                                              @RequestParam(value = "size", defaultValue = "5") int pageSize,
-                                              @RequestParam(value = "genre", required = false) String genre,
-                                              @RequestParam(value = "search", required = false) String search,
-                                              @RequestParam(value = "orderBy", required = false) String orderBy,
-                                              Model model) {
-
-        Page<BookDto> page = this.bookService.getAllBooksOrderByRequestWithAvgRating(orderBy, genre, pageNumber, pageSize);
-        if (!search.isEmpty()) {
-            page = this.bookService.getAllBooksBySearchAndOrderByRequestWithAvgRating(genre, search, orderBy, pageNumber, pageSize);
+    public String getRequestBySearch(@RequestParam(value = "status", required = false) String status,
+                                     @RequestParam(value = "search", required = false) String search,
+                                     Model model, HttpServletRequest request) {
+        if (status == null) {
+            String referer = request.getHeader("Referer");
+            status = referer.substring(referer.indexOf("=") + 1);
         }
-        model.addAttribute("genres", this.genreService.getAllGenresOrderByName());
-        model.addAttribute("genreRequest", genre);
+        model.addAttribute("statuses", RequestStatusName.values());
+        model.addAttribute("currentStatus", status);
         model.addAttribute("searchRequest", search);
-        model.addAttribute("orderByRequest", orderBy);
-        model.addAttribute("bookPage", page);
-        model.addAttribute("books", page.getContent());
-        model.addAttribute("pageNumbers", this.bookService.getTotalPages(page));
-        return "bookAllBooks";
+        model.addAttribute("requests", this.requestService.getAllRequestsBySearch(status, search));
+        return "adminMainPage";
     }
 
 }

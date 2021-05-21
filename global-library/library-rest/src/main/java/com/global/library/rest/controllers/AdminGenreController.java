@@ -2,6 +2,7 @@ package com.global.library.rest.controllers;
 
 import com.global.library.api.dto.BookDto;
 import com.global.library.api.dto.GenreDto;
+import com.global.library.api.enums.RequestStatusName;
 import com.global.library.api.services.IGenreService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +19,14 @@ public class AdminGenreController {
     }
 
     @GetMapping("/addgenre")
-    public String addBook(@ModelAttribute("genre") BookDto book) {
+    public String addGenre(@ModelAttribute("genre") BookDto book, Model model) {
+        model.addAttribute("statuses", RequestStatusName.values());
+
         return "adminAddGenre";
     }
 
     @PostMapping("/addgenre")
-    public String addBook(@ModelAttribute("genre") GenreDto genreDto, Model model) {
+    public String addGenre(@ModelAttribute("genre") GenreDto genreDto, Model model) {
         if (this.genreService.isGenreExist(genreDto.getName())) {
             model.addAttribute("genreExistError", "This genre already exist");
             return "adminAddGenre";
@@ -33,19 +36,20 @@ public class AdminGenreController {
     }
 
     @GetMapping("/genres")
-    public String getBooks(Model model) {
+    public String getGenres(Model model) {
+        model.addAttribute("statuses", RequestStatusName.values());
         model.addAttribute("genres", this.genreService.getAllGenresOrderByName());
         return "adminAllGenres";
     }
 
     @GetMapping("/genres/{id}")
-    public String deleteBook(@PathVariable("id") long id, Model model) {
+    public String deleteGenre(@PathVariable("id") long id, Model model) {
         model.addAttribute("book", this.genreService.getGenreById(id));
         return "";
     }
 
     @DeleteMapping("/genres/{id}")
-    public String deleteBook(@PathVariable("id") int id) {
+    public String deleteGenre(@PathVariable("id") int id) {
         this.genreService.deleteGenre(id);
         return "redirect:/admin/books";
     }

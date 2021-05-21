@@ -7,7 +7,9 @@ import com.global.library.api.dto.RequestDto;
 import com.global.library.api.enums.RequestStatusName;
 import com.global.library.api.mappers.RequestMapper;
 import com.global.library.api.services.IRequestService;
+import com.global.library.api.utils.IEmailSendler;
 import com.global.library.entity.Request;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +22,13 @@ public class RequestService implements IRequestService {
     private final IRequestDao requestDao;
     private final IBookDao bookDao;
     private final IUserDao userDao;
+    private final IEmailSendler emailSendler;
 
-    public RequestService(IRequestDao requestDao, IBookDao bookDao, IUserDao userDao) {
+    public RequestService(IRequestDao requestDao, IBookDao bookDao, IUserDao userDao, IEmailSendler emailSendler) {
         this.requestDao = requestDao;
         this.bookDao = bookDao;
         this.userDao = userDao;
+        this.emailSendler = emailSendler;
     }
 
     @Override
@@ -58,14 +62,14 @@ public class RequestService implements IRequestService {
 
     @Override
     @Transactional
-    public List<RequestDto> getAllConfirmedRequests() {
-        return RequestMapper.mapAllRequestsDto(this.requestDao.findAllConfirmedRequests());
+    public List<RequestDto> getAllRequests(String status) {
+        return RequestMapper.mapAllRequestsDto(this.requestDao.findAllRequests(status));
     }
 
     @Override
     @Transactional
-    public List<RequestDto> getAllProcessedRequests() {
-        return RequestMapper.mapAllRequestsDto(this.requestDao.findAllProcessedRequests());
+    public List<RequestDto> getAllRequestsBySearch(String status, String search) {
+        return RequestMapper.mapAllRequestsDto(this.requestDao.findAllRequestsBySearch(status, search));
     }
 
     @Override
@@ -100,5 +104,16 @@ public class RequestService implements IRequestService {
         request.setStatus(RequestStatusName.RETURNED.getNameDB());
         request.setDateOfReturn(LocalDateTime.now());
         this.requestDao.update(request);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void sendMessageToBookBack() {
+        String status = RequestStatusName.PROCESSED.getNameDB();
+        List<Request> requestList = this.requestDao.findAllRequests(status);
+        for (Request request : requestList) {
+            if(request.getDateOfExtradition().plusMinutes(1).isBefore(LocalDateTime.now())){
+                emailSendler.sendMessageToBookBack(request.getUser(),"GET BOOK BACK!");
+            }
+        }
     }
 }

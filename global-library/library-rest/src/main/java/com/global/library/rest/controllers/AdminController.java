@@ -1,6 +1,7 @@
 package com.global.library.rest.controllers;
 
 import com.global.library.api.dto.UserDto;
+import com.global.library.api.enums.RequestStatusName;
 import com.global.library.api.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class AdminController {
 
     @GetMapping("/users")
     public String getUsers(Model model) {
+        model.addAttribute("statuses", RequestStatusName.values());
         model.addAttribute("users", this.userService.getAllUsers());
         return "adminAllUsers";
     }

@@ -8,10 +8,10 @@ import java.util.Map;
 @Service
 public interface IEmailSendler {
 
-    void sendSimpleMessage (String to);
-
     void sendMessageWithActivationInstruction (User user, String subject);
 
     void sendMessageWithNewPassword (User user, String subject, String newPassword);
+
+    void sendMessageToBookBack(User user, String subject);
 
 }

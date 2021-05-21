@@ -60,7 +60,7 @@ CREATE TABLE `request`
 (
     `id`      BIGINT    NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `user_id` BIGINT    NOT NULL,
-    `book_id` BIGINT    NOT NULL UNIQUE,
+    `book_id` BIGINT    NOT NULL,
     `date`    TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) references user (id),
     FOREIGN KEY (book_id) references book (id)

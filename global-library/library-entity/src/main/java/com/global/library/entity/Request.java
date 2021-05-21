@@ -26,14 +26,14 @@ public class Request extends AEntity<Long> {
     @Column(name = "date_return")
     private LocalDateTime dateOfReturn;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.REFRESH, CascadeType.DETACH},
-    fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH, CascadeType.DETACH},
+    fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToOne(cascade = {CascadeType.PERSIST,CascadeType.REFRESH, CascadeType.DETACH},
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH, CascadeType.DETACH},
     fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book book;
 
     @Column(name = "status")

@@ -37,29 +37,12 @@ public class EmailSendler implements IEmailSendler {
     private SpringTemplateEngine springTemplateEngine;
 
     @Override
-    public void sendSimpleMessage(
-            String to) {
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("L3v1strauss@gmail.com");
-        message.setTo(to);
-        message.setSubject("Babe pass me hookah");
-        message.setText("You wanna hookah?");
-        emailSender.send(message);
-
-    }
-
-    @Override
     public void sendMessageWithActivationInstruction(User user, String subject) {
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("userId", user.getId());
-        templateModel.put("firstName", user.getFirstName());
-        templateModel.put("lastName", user.getLastName());
-        templateModel.put("adminEmail", EMAIL_ADDRESS);
+        addParametersToContext(templateModel, user);
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
         String htmlBody = springTemplateEngine.process("mailMessageTemplate.html", thymeleafContext);
-
         try {
             sendHtmlMessage(user.getEmail(), subject, htmlBody);
         } catch (MessagingException e) {
@@ -84,6 +67,20 @@ public class EmailSendler implements IEmailSendler {
         }
     }
 
+    @Override
+    public void sendMessageToBookBack(User user, String subject) {
+        Map<String, Object> templateModel = new HashMap<>();
+        addParametersToContext(templateModel, user);
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariables(templateModel);
+        String htmlBody = springTemplateEngine.process("mailMessageBackBookPlease.html", thymeleafContext);
+        try {
+            sendHtmlMessage(user.getEmail(), subject, htmlBody);
+        } catch (MessagingException e) {
+            log.error("Failed to send message. Error message: {}", e.getMessage());
+        }
+    }
+
     private void sendHtmlMessage(String to, String subject, String htmlBody) throws MessagingException {
 
         MimeMessage message = emailSender.createMimeMessage();
@@ -95,5 +92,12 @@ public class EmailSendler implements IEmailSendler {
         helper.setText(htmlBody, true);
 //        helper.addInline("logo", resourceFile);
         emailSender.send(message);
+    }
+
+    private void addParametersToContext(Map<String, Object> templateModel, User user) {
+        templateModel.put("userId", user.getId());
+        templateModel.put("firstName", user.getFirstName());
+        templateModel.put("lastName", user.getLastName());
+        templateModel.put("adminEmail", EMAIL_ADDRESS);
     }
 }
