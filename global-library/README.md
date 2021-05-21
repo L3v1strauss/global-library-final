@@ -1,4 +1,4 @@
-# Globa library
+# Global library
 
 Global library application is a fast way to find and get the book on the planet.
 
