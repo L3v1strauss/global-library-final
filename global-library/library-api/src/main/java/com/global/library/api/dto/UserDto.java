@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -36,7 +37,7 @@ public class UserDto {
     private String password;
     private String passwordConfirm;
     private UserDetailDto userDetailDto;
-    private Set<RoleDto> rolesDto;
+    private Set<RoleDto> rolesDto = new HashSet<>();
     @NotEmpty
     private String roleName;
 

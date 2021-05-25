@@ -7,10 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +17,6 @@ import java.util.Set;
 @SuperBuilder
 @Entity
 @Table(name = "user")
-@EqualsAndHashCode
 public class User extends AEntity<Long> {
 
     @Column(name = "first_name")
@@ -50,33 +46,20 @@ public class User extends AEntity<Long> {
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "user",
             fetch = FetchType.LAZY)
-    private List<Request> requests;
+    private List<Request> requests = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "user",
             fetch = FetchType.LAZY)
-    private List<Rating> ratings;
+    private List<Rating> ratings = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "user_detail_id", referencedColumnName = "id")
     private UserDetail userDetails;
-
-    public Set<Role> getRoles() {
-        if (roles == null) {
-            roles = new HashSet<>();
-        }
-        return roles;
-    }
-
-    public List<Request> getRequests(){
-        if(requests == null) {
-            requests = new ArrayList<>();
-        }
-        return requests;
-    }
 }

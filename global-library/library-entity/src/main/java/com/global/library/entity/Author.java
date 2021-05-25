@@ -23,12 +23,5 @@ public class Author extends AEntity<Long>{
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"))
-    private List<Book> books;
-
-    public List<Book> getBooks() {
-        if (books == null) {
-            books = new ArrayList<>();
-        }
-        return books;
-    }
+    private List<Book> books = new ArrayList<>();
 }

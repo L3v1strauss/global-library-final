@@ -3,9 +3,7 @@ package com.global.library.service.services;
 import com.global.library.api.dao.IBookDao;
 import com.global.library.api.dao.IRatingDao;
 import com.global.library.api.dao.IUserDao;
-import com.global.library.api.dao.RatingDao;
 import com.global.library.api.dto.RatingDto;
-import com.global.library.api.mappers.RatingMapper;
 import com.global.library.api.services.IRatingService;
 import com.global.library.entity.Book;
 import com.global.library.entity.Rating;
@@ -41,6 +39,8 @@ public class RatingService implements IRatingService {
         rating.setRatingValue(ratingDto.getRatingValue());
         rating.setReview(ratingDto.getReview());
         rating.setDateOfpost(LocalDateTime.now());
+        book.getRatings().add(rating);
+        user.getRatings().add(rating);
         this.ratingDao.create(rating);
     }
 

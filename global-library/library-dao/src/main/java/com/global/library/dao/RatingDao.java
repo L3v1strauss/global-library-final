@@ -1,11 +1,11 @@
-package com.global.library.api.dao;
+package com.global.library.dao;
 
+import com.global.library.api.dao.IRatingDao;
 import com.global.library.entity.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 

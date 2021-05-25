@@ -6,6 +6,7 @@ import com.global.library.api.services.IBookService;
 import com.global.library.api.services.IGenreService;
 import com.global.library.api.services.IRatingService;
 import com.global.library.api.services.IRequestService;
+import com.global.library.service.utils.LogoFileUploader;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +45,7 @@ public class BookController {
         }
         model.addAttribute("rating", new RatingDto());
         model.addAttribute("book", this.bookService.getBookByIsbn(isbn));
+        model.addAttribute("logoUtil", LogoFileUploader.class);
         return "bookPage";
     }
 

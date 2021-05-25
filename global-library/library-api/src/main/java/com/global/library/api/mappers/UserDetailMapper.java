@@ -14,7 +14,6 @@ public class UserDetailMapper {
 
     public UserDetail mapUserDetail(UserDetailDto source) {
         return UserDetail.builder()
-                .id(source.getId())
                 .address(source.getAddress())
                 .passportNumber(source.getPassportNumber())
                 .telephoneNumber(source.getTelephoneNumber())

@@ -22,12 +22,5 @@ public class Publisher extends AEntity<Long>{
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "publisher",
             fetch = FetchType.LAZY)
-    private List<Book> books;
-
-    public List<Book> getBooks() {
-        if (books == null) {
-            books = new ArrayList<>();
-        }
-        return books;
-    }
+    private List<Book> books = new ArrayList<>();
 }

@@ -6,13 +6,11 @@ import java.util.List;
 
 public interface IUserDao extends IAGenericDao<User> {
 
+    boolean isUserExist(String email);
+
     User findUserByEmail(String email);
 
-    User findUserByName(String name);
-
     List<User> findUsersBySearchRequest(String request);
-
-    boolean isUserExist(String email);
 
 
 }

@@ -1,6 +1,7 @@
-package com.global.library.api.dao;
+package com.global.library.dao;
 
 
+import com.global.library.api.dao.IBookDao;
 import com.global.library.api.enums.OrderByQuerys;
 import com.global.library.entity.*;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,27 @@ import java.util.*;
 
 @Repository
 public class BookDao extends AGenericDao<Book> implements IBookDao {
+
+    public Book findBookByIsbn(String isbn) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
+        Root<Book> bookRoot = query.from(Book.class);
+        query.select(bookRoot).where(builder.equal(bookRoot.get(Book_.isbn), isbn));
+        TypedQuery<Book> result = entityManager.createQuery(query);
+        return result.getSingleResult();
+    }
+
+    public Tuple findBookByIsbnWithAvgRating(String isbn) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
+        Root<Book> bookRoot = query.from(Book.class);
+        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
+        query.select(builder.tuple(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue))))
+                .where(builder.equal(bookRoot.get(Book_.isbn), isbn));
+        return entityManager.createQuery(query).getSingleResult();
+
+    }
+
     public BookDao() {
         super(Book.class);
     }
@@ -59,35 +81,6 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         return entityManager.createQuery(query).getResultList();
     }
 
-    public boolean isBookExistByIsbn(String isbn) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
-        Root<Book> bookRoot = query.from(Book.class);
-        query.select(bookRoot).where(builder.equal(bookRoot.get(Book_.isbn), isbn));
-        TypedQuery<Book> result = entityManager.createQuery(query);
-        return result.getResultList().stream().findFirst().isPresent();
-    }
-
-    public Book findBookByIsbn(String isbn) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
-        Root<Book> bookRoot = query.from(Book.class);
-        query.select(bookRoot).where(builder.equal(bookRoot.get(Book_.isbn), isbn));
-        TypedQuery<Book> result = entityManager.createQuery(query);
-        return result.getSingleResult();
-    }
-
-    public Tuple findBookByIsbnWithAvgRating(String isbn) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> query = builder.createTupleQuery();
-        Root<Book> bookRoot = query.from(Book.class);
-        Join<Book, Rating> ratingJoin = bookRoot.join(Book_.ratings, JoinType.LEFT);
-        query.select(builder.tuple(bookRoot, builder.avg(ratingJoin.get(Rating_.ratingValue))))
-                .where(builder.equal(bookRoot.get(Book_.isbn), isbn));
-        return entityManager.createQuery(query).getSingleResult();
-
-    }
-
     public List<Tuple> findAllBooksBySearchAndOrderByRequestWithAvgRating(String genre, String search, String orderBy) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = builder.createTupleQuery();
@@ -131,4 +124,13 @@ public class BookDao extends AGenericDao<Book> implements IBookDao {
         return entityManager.createQuery(query).getResultList();
     }
 
+
+    public boolean isBookExistByIsbn(String isbn) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> query = builder.createQuery(getGenericClass());
+        Root<Book> bookRoot = query.from(Book.class);
+        query.select(bookRoot).where(builder.equal(bookRoot.get(Book_.isbn), isbn));
+        TypedQuery<Book> result = entityManager.createQuery(query);
+        return result.getResultList().stream().findFirst().isPresent();
+    }
 }

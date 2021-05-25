@@ -7,13 +7,11 @@ import lombok.experimental.UtilityClass;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@Mapper
 @UtilityClass
 public class UserMapper {
 
     public User mapUser(UserDto source) {
         return User.builder()
-                .id(source.getId())
                 .firstName(source.getFirstName())
                 .lastName(source.getLastName())
                 .email(source.getEmail())
@@ -21,6 +19,7 @@ public class UserMapper {
                 .password(source.getPassword())
                 .passwordConfirm(source.getPasswordConfirm())
                 .userDetails(UserDetailMapper.mapUserDetail(source.getUserDetailDto()))
+                .roles(RoleMapper.mapAllRoles(source.getRolesDto()))
                 .build();
 
     }

@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class GenreService implements IGenreService {
 
-    private IGenreDao genreDao;
+    private final IGenreDao genreDao;
 
     public GenreService(IGenreDao genreDao) {
         this.genreDao = genreDao;

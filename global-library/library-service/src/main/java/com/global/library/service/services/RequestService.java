@@ -8,7 +8,9 @@ import com.global.library.api.enums.RequestStatusName;
 import com.global.library.api.mappers.RequestMapper;
 import com.global.library.api.services.IRequestService;
 import com.global.library.api.utils.IEmailSendler;
+import com.global.library.entity.Book;
 import com.global.library.entity.Request;
+import com.global.library.entity.User;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,10 +37,14 @@ public class RequestService implements IRequestService {
     @Transactional
     public void createRequest(String isbn, String email) {
         Request request = new Request();
-        request.setBook(this.bookDao.findBookByIsbn(isbn));
-        request.setUser(this.userDao.findUserByEmail(email));
+        Book book = this.bookDao.findBookByIsbn(isbn);
+        User user = this.userDao.findUserByEmail(email);
+        request.setBook(book);
+        request.setUser(user);
         request.setDateOfCreation(LocalDateTime.now());
         request.setStatus(RequestStatusName.CREATED.getNameDB());
+        book.getRequests().add(request);
+        user.getRequests().add(request);
         this.requestDao.create(request);
     }
 
@@ -106,7 +112,7 @@ public class RequestService implements IRequestService {
         this.requestDao.update(request);
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "0 13 * * * 1-5")
     public void sendMessageToBookBack() {
         String status = RequestStatusName.PROCESSED.getNameDB();
         List<Request> requestList = this.requestDao.findAllRequests(status);

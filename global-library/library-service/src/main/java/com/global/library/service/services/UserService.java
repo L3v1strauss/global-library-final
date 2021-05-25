@@ -16,7 +16,7 @@ import com.global.library.entity.UserDetail;
 import com.global.library.service.utils.LogoFileUploader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -37,9 +35,9 @@ public class UserService implements IUserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final IEmailSendler emailService;
 
-    @Autowired
     public UserService(IUserDao userDao,
-                       BCryptPasswordEncoder bCryptPasswordEncoder, IEmailSendler emailService) {
+                       BCryptPasswordEncoder bCryptPasswordEncoder,
+                       @Qualifier("emailSendler") IEmailSendler emailService) {
         this.userDao = userDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.emailService = emailService;

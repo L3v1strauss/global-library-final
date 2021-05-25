@@ -23,4 +23,5 @@ public class UserDetailDto {
     private String address;
     private String educationalInstitution;
     private String educationalInstitutionAddress;
+
 }

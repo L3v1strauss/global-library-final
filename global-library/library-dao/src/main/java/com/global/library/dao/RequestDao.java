@@ -1,5 +1,6 @@
-package com.global.library.api.dao;
+package com.global.library.dao;
 
+import com.global.library.api.dao.IRequestDao;
 import com.global.library.api.enums.RequestStatusName;
 import com.global.library.entity.*;
 import org.springframework.stereotype.Repository;
@@ -13,18 +14,6 @@ import java.util.List;
 public class RequestDao extends AGenericDao<Request> implements IRequestDao {
     public RequestDao() {
         super(Request.class);
-    }
-
-    public List<Request> findAllCreatedRequestsFromUserByEmail(String email) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Request> query = builder.createQuery(getGenericClass());
-        Root<Request> requestRoot = query.from(Request.class);
-        Join<Request, User> userJoin = requestRoot.join(Request_.user);
-        Predicate predicate = builder.equal(requestRoot.get(Request_.status), RequestStatusName.CREATED.getNameDB());
-        query.select(requestRoot).where(builder.and(builder.equal(userJoin.get(User_.email), email),
-                predicate));
-        TypedQuery<Request> result = entityManager.createQuery(query);
-        return result.getResultList();
     }
 
     public boolean isRequestExistForCurrentBookFromUser(String isbn, String email) {
@@ -41,6 +30,18 @@ public class RequestDao extends AGenericDao<Request> implements IRequestDao {
                 predicate));
         TypedQuery<Request> result = entityManager.createQuery(query);
         return result.getResultList().stream().findFirst().isPresent();
+    }
+
+    public List<Request> findAllCreatedRequestsFromUserByEmail(String email) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Request> query = builder.createQuery(getGenericClass());
+        Root<Request> requestRoot = query.from(Request.class);
+        Join<Request, User> userJoin = requestRoot.join(Request_.user);
+        Predicate predicate = builder.equal(requestRoot.get(Request_.status), RequestStatusName.CREATED.getNameDB());
+        query.select(requestRoot).where(builder.and(builder.equal(userJoin.get(User_.email), email),
+                predicate));
+        TypedQuery<Request> result = entityManager.createQuery(query);
+        return result.getResultList();
     }
 
     public List<Request> findAllConfirmedRequestsFromUserByEmail(String email) {

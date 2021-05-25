@@ -1,5 +1,6 @@
-package com.global.library.api.dao;
+package com.global.library.dao;
 
+import com.global.library.api.dao.IPublisherDao;
 import com.global.library.entity.Publisher;
 import com.global.library.entity.Publisher_;
 import org.springframework.stereotype.Repository;
@@ -11,22 +12,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 @Repository
-public class PublisherDao extends AGenericDao<Publisher> implements IPublisherDao{
+public class PublisherDao extends AGenericDao<Publisher> implements IPublisherDao {
 
     public PublisherDao() {
         super(Publisher.class);
-    }
-
-    @Override
-    public boolean isPublisherExist(String name) {
-
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Publisher> query = builder.createQuery(getGenericClass());
-            Root<Publisher> publisherRoot = query.from(Publisher.class);
-            query.select(publisherRoot).where(builder.equal(publisherRoot.get(Publisher_.name), name));
-            TypedQuery<Publisher> result = entityManager.createQuery(query);
-            return result.getResultList().stream().findFirst().isPresent();
-
     }
 
     @Override
@@ -41,5 +30,17 @@ public class PublisherDao extends AGenericDao<Publisher> implements IPublisherDa
         } catch (NoResultException e) {
             throw new NoResultException(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean isPublisherExist(String name) {
+
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Publisher> query = builder.createQuery(getGenericClass());
+            Root<Publisher> publisherRoot = query.from(Publisher.class);
+            query.select(publisherRoot).where(builder.equal(publisherRoot.get(Publisher_.name), name));
+            TypedQuery<Publisher> result = entityManager.createQuery(query);
+            return result.getResultList().stream().findFirst().isPresent();
+
     }
 }

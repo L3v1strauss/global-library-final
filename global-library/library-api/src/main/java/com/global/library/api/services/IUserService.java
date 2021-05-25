@@ -15,29 +15,29 @@ public interface IUserService {
 
      UserDto getUserById(long id);
 
+     boolean isUserExist(String mail);
+
      UserDto getUserByEmail(String email);
 
-     boolean isUserExist(String mail);
+     List<UserDto> getUsersBySearchRequest(String request);
+
+     void deleteUser(long id);
 
      List<UserDto> getAllUsers();
 
      void createUser(UserDto user);
 
-     void updateUser(Principal principal, UserDtoMyAccount user, MultipartFile file);
-
-     void deleteUser(long id);
-
      void roleChangeUser(long id, UserDto user);
 
-     public void statusChangeUser(long id, int status);
+     void statusChangeUser(long id, int status);
 
-     void changeForgotPassword (String email);
+     void updateUser(Principal principal, UserDtoMyAccount user, MultipartFile file);
 
      boolean isPasswordMatches(Principal principal, UserDtoPasswordChange userDtoPasswordChange);
 
      void updateUserPassword(Principal principal, UserDtoPasswordChange userDtoPasswordChange);
 
-     List<UserDto> getUsersBySearchRequest(String request);
+     void changeForgotPassword (String email);
 
 
 }

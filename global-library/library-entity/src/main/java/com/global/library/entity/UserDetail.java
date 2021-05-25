@@ -10,9 +10,9 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@ToString
 @SuperBuilder
 @Table(name = "user_detail")
+@EqualsAndHashCode
 public class UserDetail extends AEntity<Long> {
 
     @Column(name = "passport_number")
@@ -30,6 +30,10 @@ public class UserDetail extends AEntity<Long> {
     @Column(name = "ei_address")
     private String educationalInstitutionAddress;
 
-    @OneToOne(mappedBy = "userDetails", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userDetails",
+            optional = false,
+    fetch = FetchType.LAZY,
+    cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private User user;
+
 }

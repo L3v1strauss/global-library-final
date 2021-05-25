@@ -1,5 +1,6 @@
-package com.global.library.api.dao;
+package com.global.library.dao;
 
+import com.global.library.api.dao.IUserDao;
 import com.global.library.entity.*;
 import org.springframework.stereotype.Repository;
 
@@ -30,19 +31,6 @@ public class UserDao extends AGenericDao<User> implements IUserDao {
             CriteriaQuery<User> query = builder.createQuery(getGenericClass());
             Root<User> userRoot = query.from(User.class);
             query.select(userRoot).where(builder.equal(userRoot.get(User_.email), email));
-            TypedQuery<User> result = entityManager.createQuery(query);
-            return result.getResultList().stream().findFirst().orElse(null);
-        } catch (NoResultException e) {
-            throw new NoResultException(e.getMessage());
-        }
-    }
-
-    public User findUserByName(String name) throws NoResultException {
-        try {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<User> query = builder.createQuery(getGenericClass());
-            Root<User> userRoot = query.from(User.class);
-            query.select(userRoot).where(builder.equal(userRoot.get(User_.firstName), name));
             TypedQuery<User> result = entityManager.createQuery(query);
             return result.getResultList().stream().findFirst().orElse(null);
         } catch (NoResultException e) {

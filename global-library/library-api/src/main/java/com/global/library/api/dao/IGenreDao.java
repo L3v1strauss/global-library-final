@@ -8,9 +8,9 @@ public interface IGenreDao extends IAGenericDao<Genre> {
 
     boolean isGenreExistByName(String name);
 
+    Genre getGenreById(long id);
+
     List<Genre> findAllGenresOrderByName();
 
     Genre getGenreByName(String name);
-
-    Genre getGenreById(long id);
 }

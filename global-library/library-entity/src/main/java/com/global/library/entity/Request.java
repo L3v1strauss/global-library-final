@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @Entity
 @Table(name = "request")
+@EqualsAndHashCode
 public class Request extends AEntity<Long> {
 
     @Column(name = "date_creation")
@@ -26,12 +27,12 @@ public class Request extends AEntity<Long> {
     @Column(name = "date_return")
     private LocalDateTime dateOfReturn;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH, CascadeType.DETACH},
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH},
     fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH, CascadeType.DETACH},
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH},
     fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book book;

@@ -5,7 +5,6 @@ import com.global.library.api.dto.UserDtoMyAccount;
 import com.global.library.api.dto.UserDtoPasswordChange;
 import com.global.library.api.services.IUserService;
 import com.global.library.service.utils.LogoFileUploader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,7 +44,7 @@ public class UserController {
             model.addAttribute("emailError", "Email already exists");
             return "mainCreateNewAccount";
         }
-        userService.createUser(user);
+        this.userService.createUser(user);
         return "redirect:/";
     }
 

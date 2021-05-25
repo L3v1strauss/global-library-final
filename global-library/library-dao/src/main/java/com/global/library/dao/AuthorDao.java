@@ -1,5 +1,6 @@
-package com.global.library.api.dao;
+package com.global.library.dao;
 
+import com.global.library.api.dao.IAuthorDao;
 import com.global.library.entity.Author;
 import com.global.library.entity.Author_;
 import org.springframework.stereotype.Repository;

@@ -1,5 +1,6 @@
-package com.global.library.api.dao;
+package com.global.library.dao;
 
+import com.global.library.api.dao.IAGenericDao;
 import com.global.library.entity.AEntity;
 
 import javax.persistence.EntityManager;
@@ -22,7 +23,7 @@ public class AGenericDao<T extends AEntity<Long>> implements IAGenericDao<T> {
     protected EntityManager entityManager;
 
     public void create(T entity) {
-        entityManager.merge(entity);
+        entityManager.persist(entity);
     }
 
     public T get(long id) {

@@ -25,6 +25,6 @@ public class Genre extends AEntity<Long>{
     @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},orphanRemoval = true,
             mappedBy = "genre",
             fetch = FetchType.LAZY)
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
 
 }

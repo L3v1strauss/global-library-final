@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,14 +47,14 @@ public class Book extends AEntity<Long> {
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"))
-    private Set<Author> authors;
+    private Set<Author> authors = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH},
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
             fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
@@ -62,17 +63,10 @@ public class Book extends AEntity<Long> {
             orphanRemoval = true,
             mappedBy = "book",
             fetch = FetchType.LAZY)
-    private List<Rating> ratings;
+    private List<Rating> ratings = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "book",
     fetch = FetchType.LAZY)
-    private List<Request> request;
-
-    public Set<Author> getAuthors() {
-        if (authors == null){
-            authors = new HashSet<>();
-        }
-        return authors;
-    }
+    private List<Request> requests = new ArrayList<>();
 }
